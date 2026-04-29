@@ -51,7 +51,7 @@ In any project where you want to use these skills, run `/setup-kira-skills`. It 
 
 - Configure the issue tracker as local markdown under `docs/ephemeral/` (gitignored)
 - Set up single-context domain docs (`CONTEXT.md` + `docs/adr/`)
-- Add the relevant pointers to your `CLAUDE.md` / `AGENTS.md`
+- Add the relevant pointers to your `CLAUDE.md`
 
 You're ready to go.
 
