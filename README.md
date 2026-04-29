@@ -24,7 +24,7 @@ Inside Claude Code:
 
 Skills land in `~/.claude/plugins/cache/` and update via `/plugin marketplace update`.
 
-### Option B — Symlink (best if you want to edit the skills locally)
+### Option B — Copy from a clone
 
 1. Clone the repo somewhere on your machine:
 
@@ -32,18 +32,21 @@ Skills land in `~/.claude/plugins/cache/` and update via `/plugin marketplace up
    git clone git@github.com:yzlaboratory/skills.git ~/Workspace/skills
    ```
 
-2. Symlink the skills into `~/.claude/skills/`:
+2. Copy the skills into `~/.claude/skills/`:
 
    ```sh
-   bash ~/Workspace/skills/scripts/link-skills.sh
+   bash ~/Workspace/skills/scripts/install-skills.sh
    ```
 
+   Re-run after pulling new changes — the install copies snapshots, not live links.
+
    > **Heads up — collisions are destructive.** For each skill in this repo, the
-   > script removes any same-named directory already in `~/.claude/skills/` and
-   > replaces it with a symlink into this repo. If you already have a `tdd/`,
-   > `to-prd/`, `to-issues/`, `zoom-out/`, or `improve-codebase-architecture/`
-   > skill there, back them up first — the script will not prompt before
-   > deleting them. Existing symlinks and unrelated skills are left alone.
+   > script removes any same-named entry already in `~/.claude/skills/` (file,
+   > directory, or symlink) and replaces it with a fresh copy. If you already
+   > have a `tdd/`, `to-prd/`, `to-issues/`, `zoom-out/`, or
+   > `improve-codebase-architecture/` skill there, back them up first — the
+   > script will not prompt before deleting them. Unrelated skills are left
+   > alone.
 
 ## First-run setup (per project)
 

@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Links all skills in the repository to ~/.claude/skills, so that
+# Copies all skills in the repository into ~/.claude/skills, so that
 # they can be used by the local Claude CLI.
+#
+# Re-run after pulling new changes — copies are snapshots, not live links.
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 DEST="$HOME/.claude/skills"
 
-# If ~/.claude/skills is a symlink that resolves into this repo, we'd end up
-# writing the per-skill symlinks back into the repo's own skills/ tree. Detect
-# and bail out instead of polluting the working copy.
+# If ~/.claude/skills is a symlink that resolves into this repo (left over
+# from the old link-based installer), bail out — copying into it would write
+# back into the repo's own skills/ tree.
 if [ -L "$DEST" ]; then
   resolved="$(readlink -f "$DEST")"
   case "$resolved" in
@@ -29,10 +31,7 @@ while IFS= read -r -d '' skill_md; do
   name="$(basename "$src")"
   target="$DEST/$name"
 
-  if [ -e "$target" ] && [ ! -L "$target" ]; then
-    rm -rf "$target"
-  fi
-
-  ln -sfn "$src" "$target"
-  echo "linked $name -> $src"
+  rm -rf "$target"
+  cp -R "$src" "$target"
+  echo "copied $name -> $target"
 done
