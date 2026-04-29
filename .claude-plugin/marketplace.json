@@ -1,0 +1,14 @@
+{
+  "name": "kira-skills",
+  "owner": {
+    "name": "yzlaboratory"
+  },
+  "description": "Engineering skills for Claude Code: grilling, TDD, diagnosis, codebase architecture improvement.",
+  "plugins": [
+    {
+      "name": "kira-skills",
+      "source": "./",
+      "description": "Engineering skills bundle: grill-with-docs, tdd, diagnose, to-prd, to-issues, zoom-out, improve-codebase-architecture, setup-kira-skills."
+    }
+  ]
+}
