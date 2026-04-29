@@ -8,16 +8,52 @@ These skills are adapted from [mattpocock/skills](https://github.com/mattpocock/
 - Domain docs are always single-context (`CONTEXT.md` + `docs/adr/`)
 - No triage / label state machine
 
-## Quickstart
+## Install
 
-1. Install or symlink the skills into `~/.claude/skills/` (see `scripts/link-skills.sh`).
+Pick one of the two install paths below — don't run both, or you'll end up with
+duplicates of every skill loaded into Claude Code.
 
-2. In any project where you want to use them, run `/setup-kira-skills`. It will:
-   - Configure the issue tracker as local markdown under `docs/ephemeral/` (gitignored)
-   - Set up single-context domain docs (`CONTEXT.md` + `docs/adr/`)
-   - Add the relevant pointers to your `CLAUDE.md` / `AGENTS.md`
+### Option A — Plugin (easiest, no clone)
 
-3. You're ready to go.
+Inside Claude Code:
+
+```text
+/plugin marketplace add yzlaboratory/skills
+/plugin install kira-skills@kira-skills
+```
+
+Skills land in `~/.claude/plugins/cache/` and update via `/plugin marketplace update`.
+
+### Option B — Symlink (best if you want to edit the skills locally)
+
+1. Clone the repo somewhere on your machine:
+
+   ```sh
+   git clone git@github.com:yzlaboratory/skills.git ~/Workspace/skills
+   ```
+
+2. Symlink the skills into `~/.claude/skills/`:
+
+   ```sh
+   bash ~/Workspace/skills/scripts/link-skills.sh
+   ```
+
+   > **Heads up — collisions are destructive.** For each skill in this repo, the
+   > script removes any same-named directory already in `~/.claude/skills/` and
+   > replaces it with a symlink into this repo. If you already have a `tdd/`,
+   > `to-prd/`, `to-issues/`, `zoom-out/`, or `improve-codebase-architecture/`
+   > skill there, back them up first — the script will not prompt before
+   > deleting them. Existing symlinks and unrelated skills are left alone.
+
+## First-run setup (per project)
+
+In any project where you want to use these skills, run `/setup-kira-skills`. It will:
+
+- Configure the issue tracker as local markdown under `docs/ephemeral/` (gitignored)
+- Set up single-context domain docs (`CONTEXT.md` + `docs/adr/`)
+- Add the relevant pointers to your `CLAUDE.md` / `AGENTS.md`
+
+You're ready to go.
 
 ## What each skill solves
 
