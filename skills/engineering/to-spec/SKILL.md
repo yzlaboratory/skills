@@ -5,7 +5,7 @@ description: Convert loose thoughts or notes into a strict-Gherkin-in-markdown s
 
 # To Spec
 
-Turn loose thoughts into a strict-Gherkin-in-markdown spec under `docs/specs/`, following the project's own spec convention. Refuses to write anything ambiguous — batches clarifying questions until the spec is unambiguous, then writes it.
+Turn loose thoughts into a strict-Gherkin-in-markdown spec under `docs/specs/`, following the project's own spec convention. Refuses to write anything ambiguous — asks clarifying questions one at a time until the spec is unambiguous, then writes it.
 
 This skill assumes the project has set up `docs/specs/README.md` (the convention) and `docs/specs/_template.md` (the starting shape). If either is missing, abort and tell the user — the skill is parameterised by those files and won't guess.
 
@@ -23,7 +23,7 @@ Read `docs/specs/README.md` and `docs/specs/_template.md` every run — the conv
 
 ### 3. Run the ambiguity gates
 
-Before writing anything, every spec must have answers to all of these. If any are missing or vague, **batch the questions in one round** — don't dribble them out.
+Before writing anything, every spec must have answers to all of these. If any are missing or vague, **ask the questions one at a time** — wait for each answer before posing the next. Do not batch. Each answer often reshapes later questions, and a single focused question gets a sharper answer than a numbered list.
 
 <gates>
 - **Actor** — Who performs each scenario? "As a <role>" must be concrete (e.g. "library owner", "casual visitor"), not "user".
@@ -34,7 +34,7 @@ Before writing anything, every spec must have answers to all of these. If any ar
 - **Edge cases** — Empty state, duplicate, offline, permission denied, large input, concurrent change. Pick the ones that apply and either include them as scenarios or note them explicitly out of scope.
 </gates>
 
-Present the gaps as a numbered question list. Wait for the user's answers before writing. Iterate if the answers introduce new ambiguities.
+Ask one question, wait for the answer, then decide the next question based on what you just learned. Keep going until every gate is resolved, then write the file.
 
 ### 4. Write the file
 
