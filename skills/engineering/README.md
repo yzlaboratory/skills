@@ -9,4 +9,5 @@ Skills I use daily for code work.
 - **[tdd](./tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
 - **[to-issues](./to-issues/SKILL.md)** — Break any plan, spec, or PRD into independently-grabbable issues using vertical slices.
 - **[to-prd](./to-prd/SKILL.md)** — Turn the current conversation context into a PRD and publish it to the issue tracker.
+- **[to-spec](./to-spec/SKILL.md)** — Convert loose thoughts into a strict-Gherkin-in-markdown spec under `spec/`, batching clarifying questions until unambiguous.
 - **[zoom-out](./zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.

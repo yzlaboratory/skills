@@ -98,4 +98,5 @@ Agents accelerate software entropy. The counterweight is investing in design eve
 - **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
 - **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break any plan, spec, or PRD into independently-grabbable issues using vertical slices.
 - **[to-prd](./skills/engineering/to-prd/SKILL.md)** — Turn the current conversation context into a PRD and publish it to the issue tracker. No interview — just synthesizes what you've already discussed.
+- **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Convert loose thoughts into a strict-Gherkin-in-markdown spec under `spec/`. Batches clarifying questions for actor, motivation, preconditions, observable outcomes, unhappy path, and edge cases until the spec is unambiguous, then writes it.
 - **[zoom-out](./skills/engineering/zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
