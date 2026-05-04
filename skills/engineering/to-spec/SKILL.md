@@ -7,13 +7,13 @@ description: Convert loose thoughts or notes into a strict-Gherkin-in-markdown s
 
 Turn loose thoughts into a strict-Gherkin-in-markdown spec under `docs/specs/`, following the project's own spec convention. Refuses to write anything ambiguous — asks clarifying questions one at a time until the spec is unambiguous, then writes it.
 
-The skill is parameterised by `docs/specs/README.md` (the convention) and `docs/specs/_template.md` (the starting shape). If either is missing in the project, the skill scaffolds it from this skill's bundled defaults at [`spec-defaults/_template.md`](./spec-defaults/_template.md) and [`spec-defaults/README.md`](./spec-defaults/README.md) — copy them into the project's `docs/specs/` directory verbatim, tell the user what was scaffolded so they can customise, and proceed with spec authoring.
+The skill is parameterised by `docs/specs/README.md` (the convention) and `docs/specs/_template.md` (the starting shape). Both are scaffolded by `/setup-kira-skills` — if either is missing, stop and ask the user to run that first.
 
 ## Process
 
 ### 1. Ground in the project's convention
 
-Read `docs/specs/README.md` and `docs/specs/_template.md` every run — the convention may have evolved since last time. If either is missing, scaffold it from this skill's bundled defaults under `spec-defaults/` (copy verbatim into the project's `docs/specs/` directory), surface what was scaffolded to the user so they can customise, and then continue with the convention now in place.
+Read `docs/specs/README.md` and `docs/specs/_template.md` every run — the convention may have evolved since last time. If either is missing, stop and tell the user to run `/setup-kira-skills` first.
 
 ### 2. Source the input
 
