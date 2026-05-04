@@ -7,13 +7,13 @@ description: Convert loose thoughts or notes into a strict-Gherkin-in-markdown s
 
 Turn loose thoughts into a strict-Gherkin-in-markdown spec under `docs/specs/`, following the project's own spec convention. Refuses to write anything ambiguous — asks clarifying questions one at a time until the spec is unambiguous, then writes it.
 
-This skill assumes the project has set up `docs/specs/README.md` (the convention) and `docs/specs/_template.md` (the starting shape). If either is missing, abort and tell the user — the skill is parameterised by those files and won't guess.
+The skill is parameterised by `docs/specs/README.md` (the convention) and `docs/specs/_template.md` (the starting shape). If either is missing in the project, the skill scaffolds it from this skill's bundled defaults at [`spec-defaults/_template.md`](./spec-defaults/_template.md) and [`spec-defaults/README.md`](./spec-defaults/README.md) — copy them into the project's `docs/specs/` directory verbatim, tell the user what was scaffolded so they can customise, and proceed with spec authoring.
 
 ## Process
 
 ### 1. Ground in the project's convention
 
-Read `docs/specs/README.md` and `docs/specs/_template.md` every run — the convention may have evolved since last time. If either is missing, stop and surface that to the user.
+Read `docs/specs/README.md` and `docs/specs/_template.md` every run — the convention may have evolved since last time. If either is missing, scaffold it from this skill's bundled defaults under `spec-defaults/` (copy verbatim into the project's `docs/specs/` directory), surface what was scaffolded to the user so they can customise, and then continue with the convention now in place.
 
 ### 2. Source the input
 
@@ -53,6 +53,5 @@ Post a one-line summary: file path + scenario count (e.g. `docs/specs/add-movie.
 
 ## Out of scope
 
-- Scaffolding the convention itself (`docs/specs/README.md`, `docs/specs/_template.md`). That's a one-time project setup — surface the gap to the user but don't auto-create.
 - Wiring up Cucumber/Behave/SpecFlow runners. This skill produces specs as documentation; execution is a separate concern.
 - Editing existing specs in place. To revise a spec, ask the user to point at the file and use a normal edit flow — `/to-spec` is for new specs.
