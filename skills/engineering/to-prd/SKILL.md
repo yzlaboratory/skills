@@ -5,11 +5,13 @@ description: Turn the current conversation context into a PRD and publish it to 
 
 This skill takes the current conversation context and codebase understanding and produces a PRD. Don't run a full grilling session — synthesize what you already know. You may ask 1–2 narrow confirmation questions about the module list before publishing (see step 2), but don't walk the design tree. If the user wants a deeper interview, that's `/grill-with-docs`.
 
-The issue tracker location should have been provided to you — run `/setup-kira-skills` if not.
+The issue tracker location should have been provided to you — run `/setup-kira-skills` if not. Per `docs/agents/issue-tracker.md`, PRDs are published to `docs/ephemeral/<feature-slug>/PRD.md` (one feature per directory, kebab-case slug derived from the feature title).
 
 ## Process
 
 1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the PRD, and respect any ADRs in the area you're touching.
+
+   **If a spec already exists for this feature** (look in `docs/specs/` for a kebab-case file matching the topic), use it as the source of truth for User Stories and observable behavior. The spec captures what users see; the PRD wraps it with problem, solution, modules, and testing decisions. Don't re-derive behavior from conversation when a spec has already pinned it down — quote or paraphrase the spec's scenarios into User Stories instead. If the conversation contradicts the spec, surface that and ask which is right before writing.
 
 2. Sketch out the major modules you will need to build or modify to complete the implementation. Actively look for opportunities to extract deep modules that can be tested in isolation.
 
@@ -17,7 +19,7 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-3. Write the PRD using the template below, then publish it to the project issue tracker.
+3. Write the PRD using the template below, then publish it to the issue tracker at `docs/ephemeral/<feature-slug>/PRD.md` — create the feature-slug directory if it doesn't exist. Refuse to overwrite an existing PRD; if one is there, surface it and ask whether to extend, rename, or abort. If a spec was used as input, link to it from the Problem Statement or Solution sections so the issue-tracker reader can find the behavioral source.
 
 <prd-template>
 
