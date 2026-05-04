@@ -12,7 +12,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Domain docs** — always single-context (`CONTEXT.md` + `docs/adr/`)
 - **Specs** — strict Gherkin in markdown under `docs/specs/`, governed by `_template.md` + `README.md`
 
-This is a deterministic skill: there are no choices to present. Explore, confirm with the user, then write.
+There's no menu of options — one canonical shape — but the user still drafts and tweaks before the write happens. Explore, confirm, then write.
 
 ## Process
 
@@ -44,7 +44,7 @@ The spec-convention files (`docs/specs/_template.md` and `docs/specs/README.md`)
 
 Edit `CLAUDE.md` (create it if it doesn't exist). This skill set targets Claude Code only; `AGENTS.md` is not used.
 
-If an `## Agent skills` block already exists, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to surrounding sections.
+If an `## Agent skills` block already exists (match by exact `## Agent skills` heading), update its contents in-place rather than appending a duplicate. Don't overwrite user edits to surrounding sections. If the heading has been renamed or the block split, ask before guessing — don't append a second block on a fingerprint miss.
 
 The block:
 
@@ -64,10 +64,12 @@ Single-context layout (`CONTEXT.md` + `docs/adr/` at repo root). See `docs/agent
 Strict Gherkin in markdown under `docs/specs/`. The convention is `docs/specs/README.md`; new specs start from `docs/specs/_template.md`.
 ```
 
-Then write the two docs files using the seed templates in this skill folder as a starting point:
+Then write the two docs files using the seed templates in this skill folder as a starting point — but only when the destination file does not already exist (the user may have customised theirs; the closing message tells them re-running this skill is meant for a fresh start, so respect their edits):
 
-- [issue-tracker.md](./issue-tracker.md) — local-markdown issue tracker (under `docs/ephemeral/`)
-- [domain.md](./domain.md) — domain doc consumer rules + single-context layout
+- [issue-tracker.md](./issue-tracker.md) → `docs/agents/issue-tracker.md` — local-markdown issue tracker (under `docs/ephemeral/`)
+- [domain.md](./domain.md) → `docs/agents/domain.md` — domain doc consumer rules + single-context layout
+
+If a destination file exists, leave it alone and tell the user it was skipped. If they want to reset it, they can delete the file and re-run.
 
 **Scaffold `docs/specs/`** — copy verbatim from this skill's bundled defaults, but only when the destination file does not already exist (the user may have customised theirs):
 
