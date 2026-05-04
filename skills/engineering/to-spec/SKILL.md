@@ -11,9 +11,16 @@ The skill is parameterised by `docs/specs/README.md` (the convention) and `docs/
 
 ## Process
 
-### 1. Ground in the project's convention
+### 1. Ground in the project's convention and vocabulary
 
 Read `docs/specs/README.md` and `docs/specs/_template.md` every run — the convention may have evolved since last time. If either is missing, stop and tell the user to run `/setup-kira-skills` first.
+
+Also load the project's domain language so the spec doesn't drift to synonyms the project has already deprecated:
+
+- `CONTEXT.md` at the repo root — read if present and use its canonical terms (and avoid the listed aliases) when naming actors, actions, and outcomes in the Gherkin
+- `docs/adr/` — skim filenames; read any ADR that touches the area this spec describes, since it may constrain what the spec can promise (storage shape, identity model, integration patterns)
+
+If `CONTEXT.md` or `docs/adr/` is missing, proceed silently — those files are created lazily by `/grill-with-docs`. Never block the spec on their absence.
 
 ### 2. Source the input
 
