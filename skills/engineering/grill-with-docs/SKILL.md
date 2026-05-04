@@ -8,7 +8,7 @@ Interview me relentlessly about every aspect of this plan until we reach a share
 
 Ask the questions one at a time, waiting for feedback on each question before continuing.
 
-If a question can be answered by exploring the codebase, explore the codebase instead — but cap focused exploration at 4–5 reads. If you still don't have an answer, ask the user.
+If a question can be answered by exploring the codebase, explore the codebase instead — but cap focused exploration at 4–5 reads *per question*. If you still don't have an answer after that, ask the user. (This cap is about not rabbit-holing on a single question; it does not apply to the upfront docs load described under "Default inputs", which can read more.)
 
 ## Default inputs
 
@@ -107,7 +107,13 @@ The body of this skill grills **domain alignment** — vocabulary, relationships
 
 Before closing the session, do one explicit sweep to catch infrastructure assumptions that the domain grilling never forced into the open.
 
-For every feature in `docs/specs/` — not just the ones touched this session — ask two questions:
+**Scope the sweep.** Walk specs in this order:
+
+1. **Specs touched this session** (newly authored, rewritten, or referenced) — always sweep these.
+2. **Specs adjacent to the session's decisions** — any spec that names a concept the session resolved, or that depends on infrastructure that just got named.
+3. **Older, untouched specs** — only if the user opts in. Tell them how many remain ("12 specs were untouched this session — sweep them too?") and let them choose. Don't quietly walk every spec in the repo on every grill; that turns short sessions into marathons once the spec set grows.
+
+For each spec in scope, ask two questions:
 
 - **What infrastructure does this spec implicitly assume?** Storage shape, integration pattern, auth/identity model, external dependencies, deployment target, performance envelope. Pull each one out of the Gherkin steps explicitly so it's named, not buried.
 - **Is each assumption decided?** Cross-check against `docs/adr/` (decided), `CONTEXT.md` (committed vocabulary), and `docs/OOS.md` (deliberately deferred). If an assumption is in none of those, it's an open infrastructure gap.
@@ -118,6 +124,6 @@ Surface gaps one feature at a time, and for each gap apply the same ADR-offer th
 2. **The decision is real but not yet ready** — append it to `docs/OOS.md` with one short paragraph on what's deferred and why.
 3. **Easy to reverse, unsurprising, no real trade-off** — mention it once in the closing summary so the user knows it was considered, then move on without writing anything.
 
-Close the session with a one-line summary of what got an ADR, what went to OOS, and what was acknowledged but not recorded.
+Close the session with a one-line summary of what got an ADR, what went to OOS, what was acknowledged but not recorded, and how many older specs (if any) were left unswept.
 
 If `docs/specs/` is empty or absent, skip this check.
