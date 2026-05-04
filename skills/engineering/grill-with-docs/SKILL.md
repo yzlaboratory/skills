@@ -1,6 +1,6 @@
 ---
 name: grill-with-docs
-description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs, docs/specs/, docs/OOS.md) inline as decisions crystallise. Loads the project's docs/ folder and CONTEXT.md as default inputs. Use when user wants to stress-test a plan against their project's language and documented decisions.
+description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs, docs/specs/, docs/OOS.md) inline as decisions crystallise. Closes by sweeping every spec for infrastructure assumptions that aren't yet covered by an ADR or explicitly deferred to OOS. Loads the project's docs/ folder and CONTEXT.md as default inputs. Use when user wants to stress-test a plan against their project's language and documented decisions.
 disable-model-invocation: true
 ---
 
@@ -100,3 +100,24 @@ Only offer to create an ADR when all three are true:
 3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
 
 If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+
+## Before wrapping up: check infrastructure ADR coverage
+
+The body of this skill grills **domain alignment** — vocabulary, relationships, scenarios, contradictions with existing decisions. **Infrastructure** decisions only come up reactively, if a question about *how* happens to surface during the grill. Most of the time it doesn't.
+
+Before closing the session, do one explicit sweep to catch infrastructure assumptions that the domain grilling never forced into the open.
+
+For every feature in `docs/specs/` — not just the ones touched this session — ask two questions:
+
+- **What infrastructure does this spec implicitly assume?** Storage shape, integration pattern, auth/identity model, external dependencies, deployment target, performance envelope. Pull each one out of the Gherkin steps explicitly so it's named, not buried.
+- **Is each assumption decided?** Cross-check against `docs/adr/` (decided), `CONTEXT.md` (committed vocabulary), and `docs/OOS.md` (deliberately deferred). If an assumption is in none of those, it's an open infrastructure gap.
+
+Surface gaps one feature at a time, and for each gap apply the same ADR-offer threshold from "Offer ADRs sparingly" (hard to reverse + surprising + real trade-off):
+
+1. **All three criteria hold** — offer the ADR now. If accepted, draft it inline before closing the session.
+2. **The decision is real but not yet ready** — append it to `docs/OOS.md` with one short paragraph on what's deferred and why.
+3. **Easy to reverse, unsurprising, no real trade-off** — mention it once in the closing summary so the user knows it was considered, then move on without writing anything.
+
+Close the session with a one-line summary of what got an ADR, what went to OOS, and what was acknowledged but not recorded.
+
+If `docs/specs/` is empty or absent, skip this check.
