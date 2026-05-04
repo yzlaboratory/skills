@@ -7,7 +7,7 @@ description: Break a plan, spec, or PRD into independently-grabbable issues on t
 
 Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
 
-The issue tracker location should have been provided to you — run `/setup-kira-skills` if not.
+The issue tracker location should have been provided to you — run `/setup-kira-skills` if not. Per `docs/agents/issue-tracker.md`, issues live at `docs/ephemeral/<feature-slug>/issues/<NN>-<slug>.md`, sequentially numbered from `01`. The `<feature-slug>` is the parent feature directory (the same one that holds `PRD.md`, if a PRD exists). The filename `<NN>-<slug>.md` is the issue identifier you reference in "Blocked by".
 
 ## Process
 
@@ -62,9 +62,9 @@ Iterate until the user approves the breakdown.
 
 ### 5. Publish the issues to the issue tracker
 
-For each approved slice, publish a new issue to the issue tracker. Use the issue body template below.
+For each approved slice, write a new issue file at `docs/ephemeral/<feature-slug>/issues/<NN>-<slug>.md`. Create the `issues/` subdirectory if it doesn't exist. Use the issue body template below.
 
-Publish issues in dependency order (blockers first) so you can reference real issue identifiers in the "Blocked by" field.
+Publish issues in dependency order (blockers first), incrementing `<NN>` sequentially as you write — so by the time a downstream slice is published, the upstream filename it depends on already exists and can be referenced verbatim in "Blocked by". Scan the directory for the highest existing number and continue from there; don't reset to `01` if prior issues already exist for this feature.
 
 <issue-template>
 ## Parent
