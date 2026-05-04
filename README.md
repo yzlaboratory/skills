@@ -58,6 +58,33 @@ In any project where you want to use these skills, run `/setup-kira-skills`. It 
 
 You're ready to go.
 
+## Typical flow
+
+For a new feature, the skills compose in this order:
+
+1. **`/setup-kira-skills`** — once per repo, before anything else, to scaffold conventions
+2. **`/to-spec`** — turn the loose idea into a strict-Gherkin spec under `docs/specs/`. Pins down *what users see*
+3. **`/grill-with-docs`** — stress-test the spec against the existing domain language and decisions; resolve terminology, write ADRs for hard-to-reverse decisions, sweep for infrastructure assumptions
+4. **`/to-prd`** — synthesize the spec + conversation into a PRD under `docs/ephemeral/<feature-slug>/PRD.md`. Pins down *problem, solution, modules, and testing decisions*
+5. **`/to-issues`** — break the PRD (and the spec it references) into vertical-slice issues under `docs/ephemeral/<feature-slug>/issues/`, ready for `/tdd` to pick up
+
+Skip steps when the input is already strong — e.g. start at `/to-issues` when the user already has a tight spec and PRD. The order is what to fall back to when the input is loose.
+
+### How specs and PRDs relate
+
+`to-spec` and `to-prd` produce complementary documents, not competing ones:
+
+- **Specs** (under `docs/specs/`, committed) capture *what users see* — strict Gherkin scenarios; persistent behavioural truth that survives reorganisation
+- **PRDs** (under `docs/ephemeral/<feature-slug>/PRD.md`, gitignored) capture *problem, solution, modules, and testing decisions* — a per-feature working doc that goes stale once the feature ships
+
+When both exist, `/to-issues` reads the PRD for module/testing structure and the spec for the User Stories surface. `/to-prd` will pull User Stories from the spec when one exists rather than re-deriving from conversation.
+
+### Which skills auto-fire vs need an explicit slash
+
+`setup-kira-skills` and `grill-with-docs` are marked `disable-model-invocation: true` — they only run when you explicitly invoke the slash command. They're heavy: setup writes many files at once, and grilling is a long interactive session, so neither should fire just because the conversation drifts near them.
+
+`to-spec`, `to-prd`, and `to-issues` are deliberately auto-invokable: when the conversation makes it clear you want a spec or a PRD or to break work into issues, the matching skill should pick itself up without you having to remember the slash command. If that's wrong for your workflow, add `disable-model-invocation: true` to the skill's frontmatter locally.
+
 ## What each skill solves
 
 ### Misalignment between you and the agent
