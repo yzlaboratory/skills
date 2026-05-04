@@ -58,17 +58,40 @@ In any project where you want to use these skills, run `/setup-kira-skills`. It 
 
 You're ready to go.
 
-## Typical flow
+## Typical flows
 
-For a new feature, the skills compose in this order:
+`/setup-kira-skills` runs once per repo before anything else. From there, two flows depending on how much upfront design the feature needs.
 
-1. **`/setup-kira-skills`** — once per repo, before anything else, to scaffold conventions
-2. **`/to-spec`** — turn the loose idea into a strict-Gherkin spec under `docs/specs/`. Pins down *what users see*
-3. **`/grill-with-docs`** — stress-test the spec against the existing domain language and decisions; resolve terminology, write ADRs for hard-to-reverse decisions, sweep for infrastructure assumptions
-4. **`/to-prd`** — synthesize the spec + conversation into a PRD under `docs/ephemeral/<feature-slug>/PRD.md`. Pins down *problem, solution, modules, and testing decisions*
-5. **`/to-issues`** — break the PRD (and the spec it references) into vertical-slice issues under `docs/ephemeral/<feature-slug>/issues/`, ready for `/tdd` to pick up
+### Light flow — when spec + ADRs are enough
 
-Skip steps when the input is already strong — e.g. start at `/to-issues` when the user already has a tight spec and PRD. The order is what to fall back to when the input is loose.
+Use when the feature is small or medium, the module shape is obvious, and tests follow patterns already in the codebase.
+
+1. **`/to-spec`** — strict-Gherkin spec under `docs/specs/`. Pins down *what users see*
+2. **`/grill-with-docs`** — stress-test the spec against the existing domain language and decisions; resolve terminology, write ADRs for hard-to-reverse decisions, sweep for infrastructure assumptions
+3. **`/to-issues`** — break the spec (informed by `CONTEXT.md`, `docs/adr/`, `docs/OOS.md`) into vertical-slice issues under `docs/ephemeral/<feature-slug>/issues/`, ready for `/tdd`
+
+Module structure emerges during slicing; testing strategy is decided per-slice during `/tdd`.
+
+### Heavy flow — when modules and testing need to be locked first
+
+Use when the feature is large, the module decomposition is non-obvious (deep vs shallow, interface boundaries), or the test strategy is non-trivial enough to want upfront agreement before any slice is drafted.
+
+1. **`/to-spec`** — same as light flow
+2. **`/grill-with-docs`** — same as light flow
+3. **`/to-prd`** — synthesise the spec + conversation into a PRD under `docs/ephemeral/<feature-slug>/PRD.md`. Pins down *problem, solution, modules, and testing decisions* — the things that are NOT captured by spec/ADRs/OOS
+4. **`/to-issues`** — break the PRD (and the spec it references) into vertical-slice issues
+
+### Choosing between them
+
+The PRD's unique contribution over spec + ADRs + OOS is:
+
+- **Module decomposition** (deep modules to extract, interfaces, testability boundaries) — too fine-grained for ADRs
+- **Testing decisions** (which modules get tests, prior art, what makes a good test for this feature) — not captured anywhere else
+- A **single per-feature working doc** that summarises everything for navigation
+
+If those don't need locking before slicing, skip `/to-prd`. You can always run it later if the feature grows.
+
+Either flow can be entered partway when the input is already strong — e.g. start at `/to-issues` when a spec and (optionally) PRD already exist.
 
 ### How specs and PRDs relate
 
@@ -77,7 +100,7 @@ Skip steps when the input is already strong — e.g. start at `/to-issues` when 
 - **Specs** (under `docs/specs/`, committed) capture *what users see* — strict Gherkin scenarios; persistent behavioural truth that survives reorganisation
 - **PRDs** (under `docs/ephemeral/<feature-slug>/PRD.md`, gitignored) capture *problem, solution, modules, and testing decisions* — a per-feature working doc that goes stale once the feature ships
 
-When both exist, `/to-issues` reads the PRD for module/testing structure and the spec for the User Stories surface. `/to-prd` will pull User Stories from the spec when one exists rather than re-deriving from conversation.
+When both exist, `/to-issues` reads the PRD for module/testing structure and the spec for the User Stories surface. `/to-prd` will pull User Stories from the spec when one exists rather than re-deriving from conversation. When only the spec exists, `/to-issues` slices directly off it.
 
 ### Which skills auto-fire vs need an explicit slash
 
