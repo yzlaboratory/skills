@@ -8,7 +8,7 @@
     {
       "name": "kira-skills",
       "source": "./",
-      "description": "Engineering skills bundle: grill-with-docs, tdd, diagnose, to-prd, to-issues, zoom-out, improve-codebase-architecture, setup-kira-skills."
+      "description": "Engineering skills bundle: create-alignment-and-refine-docs, tdd, diagnose, to-prd, to-issues, implement-issues, zoom-out, improve-codebase-architecture, setup-kira-skills-in-project."
     }
   ]
 }

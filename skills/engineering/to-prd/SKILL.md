@@ -3,9 +3,9 @@ name: to-prd
 description: Turn the current conversation context into a PRD and publish it to the project issue tracker. Use when user wants to create a PRD from the current context.
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a PRD. Don't run a full grilling session — synthesize what you already know. You may ask 1–2 narrow confirmation questions about the module list before publishing (see step 2), but don't walk the design tree. If the user wants a deeper interview, that's `/grill-with-docs`.
+This skill takes the current conversation context and codebase understanding and produces a PRD. Don't run a full grilling session — synthesize what you already know. You may ask 1–2 narrow confirmation questions about the module list before publishing (see step 2), but don't walk the design tree. If the user wants a deeper interview, that's `/create-alignment-and-refine-docs`.
 
-The issue tracker location should have been provided to you — run `/setup-kira-skills` if not.
+The issue tracker location should have been provided to you — run `/setup-kira-skills-in-project` if not.
 
 ## Process
 

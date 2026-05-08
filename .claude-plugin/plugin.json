@@ -1,11 +1,11 @@
 {
   "name": "kira-skills",
   "skills": [
+    "./skills/engineering/create-alignment-and-refine-docs",
     "./skills/engineering/diagnose",
-    "./skills/engineering/grill-with-docs",
     "./skills/engineering/implement-issues",
     "./skills/engineering/improve-codebase-architecture",
-    "./skills/engineering/setup-kira-skills",
+    "./skills/engineering/setup-kira-skills-in-project",
     "./skills/engineering/tdd",
     "./skills/engineering/to-issues",
     "./skills/engineering/to-prd",
