@@ -1,13 +1,13 @@
 ---
 name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
+description: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Reads `docs/specs/` (behavioral specs), `docs/adr/` (architectural decisions), `docs/OOS.md` (non-goals), and `CONTEXT.md` (domain glossary) as default inputs alongside whatever is in the conversation. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
 ---
 
 # To Issues
 
 Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
 
-The issue tracker location should have been provided to you — run `/setup-kira-skills` if not.
+The issue tracker location should have been provided to you — run `/setup-kira-skills-in-project` if not.
 
 ## Process
 
@@ -15,12 +15,14 @@ The issue tracker location should have been provided to you — run `/setup-kira
 
 Work from whatever is already in the conversation context. If the user passes an issue reference (issue number, URL, or path) as an argument, fetch it from the issue tracker and read its full body and comments.
 
-Also read project documentation that captures the WHAT and the WHY when it is present in the repo:
+**Always also read the project's documentation set as default inputs** — even if the user did not point at them explicitly. These are the canonical sources of WHAT and WHY for this repo:
 
-- `docs/specs/` — behavioral specs (often Gherkin scenarios or prose user journeys); these define the surface to slice through
+- `docs/specs/*.md` — behavioral specs (Gherkin scenarios or prose user journeys); these define the surface to slice through
+- `docs/adr/*.md` — architectural decisions that constrain implementation (storage shape, integration patterns, security posture); slices must not contradict these
+- `docs/OOS.md` — explicit non-goals; do **not** draft slices for anything listed here
 - `CONTEXT.md` — the domain glossary; issue titles and descriptions must use this vocabulary
-- `docs/adr/` — architectural decisions that constrain implementation (storage shape, integration patterns, security posture)
-- `docs/OOS.md` — explicit non-goals; do not draft slices for anything listed here
+
+Load every file present from this set before drafting. If `docs/specs/`, `docs/adr/`, or `docs/OOS.md` is missing entirely, note that in the summary you show the user — the breakdown is weaker without them, and the user may want to pause and run `/create-alignment-and-refine-docs` first.
 
 Use the union of all available sources, not just one. A Gherkin spec tells you which scenarios exist; CONTEXT.md tells you what to call things; ADRs tell you which technical paths are already chosen and which would contradict prior decisions; OOS.md tells you what NOT to slice.
 
