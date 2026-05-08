@@ -65,15 +65,15 @@ The engineering skills are designed to chain. A typical flow from "I have an ide
 
 ```mermaid
 flowchart TD
-    A[One-time install<br/>plugin OR install-skills.sh] --> B[/setup-kira-skills-in-project<br/>scaffolds CLAUDE.md, docs/agents,<br/>docs/specs, docs/ephemeral/]
-    B --> C[/create-alignment-and-refine-docs<br/>grills the plan, edits CONTEXT.md,<br/>docs/adr, docs/specs, docs/OOS.md inline]
-    C --> D{Need a PRD?}
-    D -->|optional| E[/to-prd<br/>synthesises conversation + docs<br/>into a PRD on the issue tracker]
+    A["One-time install"] --> B["/setup-kira-skills-in-project"]
+    B --> C["/create-alignment-and-refine-docs"]
+    C --> D{"Need a PRD?"}
+    D -->|optional| E["/to-prd"]
     D -->|skip| F
-    E --> F[/to-issues<br/>reads docs/specs, docs/adr, docs/OOS.md,<br/>CONTEXT.md and produces vertical-slice issues]
-    F --> G{How to implement?}
-    G -->|one issue at a time<br/>in this conversation| H[/tdd<br/>red-green-refactor on a single issue]
-    G -->|whole backlog in parallel| I[/implement-issues<br/>spawns one /tdd subagent per issue per wave,<br/>each in its own worktree]
+    E --> F["/to-issues"]
+    F --> G{"How to implement?"}
+    G -->|one issue at a time<br/>in this conversation| H["/tdd"]
+    G -->|whole backlog in parallel| I["/implement-issues"]
 ```
 
 **The shape of the chain:**
