@@ -23,7 +23,7 @@ If the path does not exist, is not a directory, or contains no `*.md` issue file
 
 ## Process
 
-### 1. Survey the backlog
+### 1. Survey the backlog and get one-time consent
 
 Read every `*.md` file under the given path. For each, capture:
 
@@ -39,17 +39,16 @@ Print a summary:
 - Already done
 - Not done
 - Issues with unresolvable blockers (typo, missing file, cycle) — flag these and stop until the user fixes them
+- The first wave: size and titles, so the user knows what's about to spawn
+- A note that subsequent waves will spawn automatically as blockers clear
+
+Quiz **once**: _"Run the full backlog autonomously? I'll spawn each wave in parallel as it unblocks, without asking again."_ Wait for explicit approval. After approval, do not ask again — proceed through every wave automatically until the backlog is empty or a subagent reports `RESULT: blocked`.
 
 ### 2. Compute the next wave
 
 A **wave** is the set of not-done issues whose blockers are all done.
 
-Show the user the planned wave:
-
-- Wave size (parallelism)
-- Title and path of each issue in the wave
-
-Quiz: _"Spawn N subagents in parallel for wave 1?"_ Wait for explicit approval before spawning. Do not assume yes.
+Print the wave (size + issue titles) so the user can see what's running, but do **not** ask for approval again — the user already consented in step 1.
 
 ### 3. Spawn the wave in parallel
 
@@ -119,7 +118,7 @@ The skill is complete only when **every** issue file in the given path has `Stat
 - **Do not** guess at the issues directory if no argument was supplied.
 - **Do not** mark `Status: done` unless the subagent explicitly returned `RESULT: done`.
 - **Do not** continue past a wave if any subagent in that wave failed without user direction.
-- **Do not** skip the wave-approval quiz, even on subsequent waves — the user may want to inspect the merged result before kicking off the next batch.
+- **Do not** re-ask for wave approval after the initial one-time consent in step 1 — the user opted into the autonomous run, so subsequent waves spawn automatically. Only stop if a subagent reports `RESULT: blocked`, a merge conflict surfaces, or the backlog is empty.
 
 ## Failure modes worth naming
 
