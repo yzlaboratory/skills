@@ -50,13 +50,42 @@ Skills land in `~/.claude/plugins/cache/` and update via `/plugin marketplace up
 
 ## First-run setup (per project)
 
-In any project where you want to use these skills, run `/setup-kira-skills`. It will:
+In any project where you want to use these skills, run `/setup-kira-skills-in-project`. It will:
 
 - Configure the issue tracker as local markdown under `docs/ephemeral/` (gitignored)
 - Set up single-context domain docs (`CONTEXT.md` + `docs/adr/`)
+- Scaffold `docs/specs/` with the strict-Gherkin spec template and README
 - Add the relevant pointers to your `CLAUDE.md`
 
 You're ready to go.
+
+## How the skills compose — end-to-end flow
+
+The engineering skills are designed to chain. A typical flow from "I have an idea" to "the whole backlog is shipped":
+
+```mermaid
+flowchart TD
+    A[One-time install<br/>plugin OR install-skills.sh] --> B[/setup-kira-skills-in-project<br/>scaffolds CLAUDE.md, docs/agents,<br/>docs/specs, docs/ephemeral/]
+    B --> C[/create-alignment-and-refine-docs<br/>grills the plan, edits CONTEXT.md,<br/>docs/adr, docs/specs, docs/OOS.md inline]
+    C --> D{Need a PRD?}
+    D -->|optional| E[/to-prd<br/>synthesises conversation + docs<br/>into a PRD on the issue tracker]
+    D -->|skip| F
+    E --> F[/to-issues<br/>reads docs/specs, docs/adr, docs/OOS.md,<br/>CONTEXT.md and produces vertical-slice issues]
+    F --> G{How to implement?}
+    G -->|one issue at a time<br/>in this conversation| H[/tdd<br/>red-green-refactor on a single issue]
+    G -->|whole backlog in parallel| I[/implement-issues<br/>spawns one /tdd subagent per issue per wave,<br/>each in its own worktree]
+```
+
+**The shape of the chain:**
+
+1. **Install once** — plugin or `install-skills.sh`. Repo-independent.
+2. **`/setup-kira-skills-in-project`** — run once per repo. Creates the conventions every other skill reads from.
+3. **`/create-alignment-and-refine-docs`** — interview-style grilling that aligns you and the agent on terminology and scope, while writing decisions straight into `CONTEXT.md`, `docs/adr/`, `docs/specs/`, and `docs/OOS.md`.
+4. **`/to-prd`** *(optional)* — if a PRD will help carry context across sessions or stakeholders, generate one from the conversation and the docs.
+5. **`/to-issues`** — slice the PRD/specs/plan into tracer-bullet issues. Reads ADRs, specs, OOS, and CONTEXT as default inputs.
+6. **Implement** — pick one:
+   - **`/tdd`** in this same conversation, one issue at a time.
+   - **`/implement-issues`** to fan the whole backlog out to parallel `/tdd` subagents, each working in its own git worktree. You give consent once at the start; subsequent waves spawn automatically as blockers clear.
 
 ## What each skill solves
 
@@ -64,13 +93,13 @@ You're ready to go.
 
 Agents guess at what you want. The fix is a structured grilling session that interviews you until each branch of the design tree is resolved.
 
-- [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md) — grilling session that also updates `CONTEXT.md` and ADRs inline as decisions crystallise
+- [`/create-alignment-and-refine-docs`](./skills/engineering/create-alignment-and-refine-docs/SKILL.md) — grilling session that also updates `CONTEXT.md`, ADRs, specs, and OOS inline as decisions crystallise
 
 ### Verbose, jargon-blind agents
 
 Agents drop into a project and use 20 words where 1 will do. A shared domain language fixes that — and makes the codebase easier for them to navigate, with consistently named identifiers and fewer thinking tokens spent.
 
-This is built into [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md): every resolved term goes into `CONTEXT.md` immediately. Hard-to-reverse architectural decisions get an ADR under `docs/adr/`.
+This is built into [`/create-alignment-and-refine-docs`](./skills/engineering/create-alignment-and-refine-docs/SKILL.md): every resolved term goes into `CONTEXT.md` immediately. Hard-to-reverse architectural decisions get an ADR under `docs/adr/`.
 
 ### Code that doesn't work
 
@@ -78,6 +107,12 @@ When you and the agent are aligned but the code still breaks, you need feedback 
 
 - [`/tdd`](./skills/engineering/tdd/SKILL.md) — red-green-refactor loop with guidance on good vs bad tests
 - [`/diagnose`](./skills/engineering/diagnose/SKILL.md) — disciplined diagnosis: reproduce → minimise → hypothesise → instrument → fix → regression-test
+
+### A whole backlog to burn down
+
+When you have a directory of issues (typically produced by `/to-issues`) and want them all implemented without babysitting each one.
+
+- [`/implement-issues`](./skills/engineering/implement-issues/SKILL.md) — orchestrates parallel `/tdd` subagents, one per issue per wave, each in its own worktree. One-time consent at the start; subsequent waves spawn automatically as blockers clear.
 
 ### Architectural drift
 
@@ -91,13 +126,13 @@ Agents accelerate software entropy. The counterweight is investing in design eve
 
 ### Engineering
 
+- **[create-alignment-and-refine-docs](./skills/engineering/create-alignment-and-refine-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md`, ADRs, specs, and OOS inline.
 - **[diagnose](./skills/engineering/diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
-- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
-- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every issue in a directory: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. Requires the issues directory path as an argument.
+- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every issue in a directory: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. One-time consent at the start; subsequent waves spawn automatically. Requires the issues directory path as an argument.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
-- **[setup-kira-skills](./skills/engineering/setup-kira-skills/SKILL.md)** — Scaffold the per-repo config (local-markdown issue tracker under `docs/ephemeral/`, single-context domain docs, strict-Gherkin spec template and README under `docs/specs/`) that the other engineering skills consume. Run once per repo before using `to-spec`, `grill-with-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
+- **[setup-kira-skills-in-project](./skills/engineering/setup-kira-skills-in-project/SKILL.md)** — Scaffold the per-repo config (local-markdown issue tracker under `docs/ephemeral/`, single-context domain docs, strict-Gherkin spec template and README under `docs/specs/`) that the other engineering skills consume. Run once per repo before using `to-spec`, `create-alignment-and-refine-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
 - **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
-- **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break any plan, spec, or PRD into independently-grabbable issues using vertical slices.
+- **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break any plan, spec, or PRD into independently-grabbable issues using vertical slices. Reads `docs/specs/`, `docs/adr/`, `docs/OOS.md`, and `CONTEXT.md` as default inputs.
 - **[to-prd](./skills/engineering/to-prd/SKILL.md)** — Turn the current conversation context into a PRD and publish it to the issue tracker. No interview — just synthesizes what you've already discussed.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Convert loose thoughts into a strict-Gherkin-in-markdown spec under `docs/specs/`. Asks clarifying questions one at a time — actor, motivation, preconditions, observable outcomes, unhappy path, edge cases — until the spec is unambiguous, then writes it.
 - **[zoom-out](./skills/engineering/zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
