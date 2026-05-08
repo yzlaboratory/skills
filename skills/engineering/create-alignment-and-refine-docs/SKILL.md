@@ -1,5 +1,5 @@
 ---
-name: grill-with-docs
+name: create-alignment-and-refine-docs
 description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs, docs/specs/, docs/OOS.md) inline as decisions crystallise. Closes by sweeping every spec for infrastructure assumptions that aren't yet covered by an ADR or explicitly deferred to OOS. Loads the project's docs/ folder and CONTEXT.md as default inputs. Use when user wants to stress-test a plan against their project's language and documented decisions.
 disable-model-invocation: true
 ---
@@ -86,7 +86,7 @@ Don't couple `CONTEXT.md` to implementation details. Only include terms that are
 You may also create or edit `docs/specs/*.md` and `docs/OOS.md` as the grilling lands decisions:
 
 - **A spec is contradicted, expanded, or simplified by a resolved decision.** The spec is the source of behavioral truth and should reflect the latest agreed model. Small edits go in immediately. Large rewrites that touch many scenarios may be deferred to an explicit editing pass at the end of the session — but only if you announce that intent and keep notes of what needs to change.
-- **A new spec is needed for a behavior that does not yet have one.** Every spec — newly-authored or rewritten — **must follow `docs/specs/_template.md` exactly**, with `docs/specs/README.md` providing the surrounding convention (Gherkin discipline, prose-vs-fenced-block placement, ADR cross-linking). If either file is missing, stop and ask the user to run `/setup-kira-skills` first — those files come from a single canonical scaffold. The same template adherence applies when editing an existing spec: keep the file's structure aligned with `docs/specs/_template.md`.
+- **A new spec is needed for a behavior that does not yet have one.** Every spec — newly-authored or rewritten — **must follow `docs/specs/_template.md` exactly**, with `docs/specs/README.md` providing the surrounding convention (Gherkin discipline, prose-vs-fenced-block placement, ADR cross-linking). If either file is missing, stop and ask the user to run `/setup-kira-skills-in-project` first — those files come from a single canonical scaffold. The same template adherence applies when editing an existing spec: keep the file's structure aligned with `docs/specs/_template.md`.
 - **A decision is "yes, but not in v1" — or any other deliberate deferral.** Append it to `docs/OOS.md` immediately as an explicitly deferred item, with one short paragraph explaining what was deferred and why. OOS deferrals are cheap to add and easy to lose if batched.
 
 Spec rewrites at scale (renaming the canonical verb across every file, dropping a removed concept from many scenarios, etc.) should still be done as atomic per-file commits, not one giant change.
