@@ -1,6 +1,6 @@
 ---
-name: setup-kira-skills
-description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, and `docs/specs/` with the strict-Gherkin spec template and README. Also adds `docs/ephemeral` to `.gitignore`. Run before first use of `to-spec`, `grill-with-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, or spec convention.
+name: setup-kira-skills-in-project
+description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, and `docs/specs/` with the strict-Gherkin spec template and README. Also adds `docs/ephemeral` to `.gitignore`. Run before first use of `to-spec`, `create-alignment-and-refine-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, or spec convention.
 disable-model-invocation: true
 ---
 
@@ -38,7 +38,7 @@ Show the user a draft of:
 
 Let them edit before writing.
 
-The spec-convention files (`docs/specs/_template.md` and `docs/specs/README.md`) are copied verbatim from this skill's bundled defaults — they're a single canonical scaffold that `to-spec` and `grill-with-docs` rely on, so we don't draft them. Mention to the user that they'll be written and can be edited later.
+The spec-convention files (`docs/specs/_template.md` and `docs/specs/README.md`) are copied verbatim from this skill's bundled defaults — they're a single canonical scaffold that `to-spec` and `create-alignment-and-refine-docs` rely on, so we don't draft them. Mention to the user that they'll be written and can be edited later.
 
 ### 3. Write
 
