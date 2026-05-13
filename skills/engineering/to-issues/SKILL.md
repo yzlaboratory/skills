@@ -1,30 +1,48 @@
 ---
 name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Reads `docs/specs/` (behavioral specs), `docs/adr/` (architectural decisions), `docs/OOS.md` (non-goals), and `CONTEXT.md` (domain glossary) as default inputs alongside whatever is in the conversation. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
+description: Break a PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Requires a PRD file under `docs/prd/` as an argument — the PRD is the source of truth for what to slice. Reads `docs/specs/` (behavioral specs), `docs/adr/` (architectural decisions), `docs/OOS.md` (non-goals), and `CONTEXT.md` (domain glossary) as supporting inputs alongside the PRD. Use when user wants to convert an approved PRD into implementation tickets.
 ---
 
 # To Issues
 
-Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
+Break a PRD into independently-grabbable issues using vertical slices (tracer bullets).
 
-The issue tracker location should have been provided to you — run `/setup-kira-skills-in-project` if not.
+The issue tracker location and `docs/prd/` should already exist — run `/setup-kira-skills-in-project` if not.
+
+## Required argument
+
+A path to a PRD file under `docs/prd/` (e.g. `docs/prd/checkout-flow.md`).
+
+If no path is provided, **stop immediately** and reply:
+
+> This skill requires a PRD file as an argument (e.g. `docs/prd/<feature>.md`). If you don't have a PRD yet, run `/create-prd-after-alignment` first. Re-run with the PRD path as an argument.
+
+Do not guess. Do not pick "the most recent file under `docs/prd/`". Do not synthesise a PRD on the fly — that's `/create-prd-after-alignment`. Refuse and ask.
+
+If the path does not exist, is not a file, or is not under `docs/prd/`, stop and tell the user.
 
 ## Process
 
 ### 1. Gather context
 
-Work from whatever is already in the conversation context. If the user passes an issue reference (issue number, URL, or path) as an argument, fetch it from the issue tracker and read its full body and comments.
+Read the PRD file passed as the argument **in full**. It is the source of truth for:
 
-**Always also read the project's documentation set as default inputs** — even if the user did not point at them explicitly. These are the canonical sources of WHAT and WHY for this repo:
+- What user stories are in scope
+- Which specs (`docs/specs/*.md`) define the behavioral surface — follow every link in the PRD's "Specs covered" section
+- Which ADRs (`docs/adr/*.md`) constrain implementation — follow every link in the PRD's "Architectural decisions" section
+- What's explicitly out of scope (the PRD's "Out of scope" section, and the OOS entries it references)
+- What implementation and testing decisions have already been made
 
-- `docs/specs/*.md` — behavioral specs (Gherkin scenarios or prose user journeys); these define the surface to slice through
-- `docs/adr/*.md` — architectural decisions that constrain implementation (storage shape, integration patterns, security posture); slices must not contradict these
-- `docs/OOS.md` — explicit non-goals; do **not** draft slices for anything listed here
+**Also read the supporting documentation set** even if not linked from the PRD — these are the canonical references for vocabulary and constraints:
+
 - `CONTEXT.md` — the domain glossary; issue titles and descriptions must use this vocabulary
+- `docs/specs/*.md` — behavioral specs the PRD links to (and any others that touch the same area)
+- `docs/adr/*.md` — architectural decisions; slices must not contradict any ADR
+- `docs/OOS.md` — explicit non-goals; do **not** draft slices for anything listed here
 
-Load every file present from this set before drafting. If `docs/specs/`, `docs/adr/`, or `docs/OOS.md` is missing entirely, note that in the summary you show the user — the breakdown is weaker without them, and the user may want to pause and run `/create-alignment-and-refine-docs` first.
+If the PRD links to specs or ADRs that don't exist on disk, stop and surface the broken links — the alignment that produced this PRD has drifted from the artifacts it references.
 
-Use the union of all available sources, not just one. A Gherkin spec tells you which scenarios exist; CONTEXT.md tells you what to call things; ADRs tell you which technical paths are already chosen and which would contradict prior decisions; OOS.md tells you what NOT to slice.
+Use the union of all available sources, anchored by the PRD. A Gherkin spec tells you which scenarios exist; CONTEXT.md tells you what to call things; ADRs tell you which technical paths are already chosen; OOS.md tells you what NOT to slice; the PRD tells you which of the above are actually in scope **for this feature**.
 
 ### 2. Explore the codebase (optional)
 
