@@ -22,7 +22,9 @@ Read every doc the alignment session touched (and the rest of the documentation 
 - `docs/OOS.md` — explicit non-goals; the PRD must respect these
 - `CONTEXT.md` — the domain glossary; all PRD prose uses this vocabulary
 
-If `docs/specs/` is empty and there are no recent ADR additions, stop and tell the user: there is no alignment outcome to synthesise. Suggest they run `/create-alignment-and-refine-docs` first.
+A valid alignment session does not always write a spec or an ADR — specs are only authored when a behavior needs one, and ADRs are offered sparingly (hard-to-reverse + surprising + real trade-off). Edits to `CONTEXT.md` or appends to `docs/OOS.md` are equally valid alignment outcomes.
+
+Stop and refuse only if the alignment produced **no** artifact at all — no spec, no ADR, no OOS entry, no `CONTEXT.md` change in the conversation history. In that case, suggest the user run `/create-alignment-and-refine-docs` first.
 
 ### 2. Sketch the module surface
 
