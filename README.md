@@ -85,7 +85,7 @@ flowchart TD
 5. **`/to-issues`** — slice the PRD/specs/plan into tracer-bullet issues. Reads ADRs, specs, OOS, and CONTEXT as default inputs.
 6. **Implement** — pick one:
    - **`/tdd`** in this same conversation, one issue at a time.
-   - **`/implement-issues`** to fan the whole backlog out to parallel `/tdd` subagents, each working in its own git worktree. You give consent once at the start; subsequent waves spawn automatically as blockers clear.
+   - **`/implement-issues`** to fan the whole backlog out to parallel `/tdd` subagents, each working in its own git worktree. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate.
 
 ## What each skill solves
 
@@ -112,7 +112,7 @@ When you and the agent are aligned but the code still breaks, you need feedback 
 
 When you have a directory of issues (typically produced by `/to-issues`) and want them all implemented without babysitting each one.
 
-- [`/implement-issues`](./skills/engineering/implement-issues/SKILL.md) — orchestrates parallel `/tdd` subagents, one per issue per wave, each in its own worktree. One-time consent at the start; subsequent waves spawn automatically as blockers clear.
+- [`/implement-issues`](./skills/engineering/implement-issues/SKILL.md) — orchestrates parallel `/tdd` subagents, one per issue per wave, each in its own worktree. Invoking the skill is the approval; waves spawn automatically as blockers clear, with no per-wave gate.
 
 ### Architectural drift
 
@@ -128,7 +128,7 @@ Agents accelerate software entropy. The counterweight is investing in design eve
 
 - **[create-alignment-and-refine-docs](./skills/engineering/create-alignment-and-refine-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md`, ADRs, specs, and OOS inline.
 - **[diagnose](./skills/engineering/diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
-- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every issue in a directory: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. One-time consent at the start; subsequent waves spawn automatically. Requires the issues directory path as an argument.
+- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every issue in a directory: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate. Requires the issues directory path as an argument.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
 - **[setup-kira-skills-in-project](./skills/engineering/setup-kira-skills-in-project/SKILL.md)** — Scaffold the per-repo config (local-markdown issue tracker under `docs/ephemeral/`, single-context domain docs, strict-Gherkin spec template and README under `docs/specs/`) that the other engineering skills consume. Run once per repo before using `to-spec`, `create-alignment-and-refine-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
 - **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
