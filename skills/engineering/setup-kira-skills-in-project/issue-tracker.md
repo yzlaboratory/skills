@@ -1,16 +1,18 @@
 # Issue tracker: Local Markdown
 
-Issues and PRDs for this repo live as markdown files in `docs/ephemeral/`.
+Issues for this repo live as markdown files in `docs/ephemeral/`.
 
 This directory is gitignored — issues are local-only working notes, not committed history.
+
+PRDs are **not** stored here. They live as committed markdown under `docs/prd/`, one file per feature, authored by `/create-prd-after-alignment` and consumed by `/to-issues`.
 
 ## Conventions
 
 - One feature per directory: `docs/ephemeral/<feature-slug>/`
-- The PRD is `docs/ephemeral/<feature-slug>/PRD.md`
 - Implementation issues are `docs/ephemeral/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`
 - Status is recorded as a `Status:` line near the top of each issue file (free-form — no canonical label vocabulary)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
+- The PRD that produced these issues lives at `docs/prd/<feature-slug>.md` (committed)
 
 ## When a skill says "publish to the issue tracker"
 
