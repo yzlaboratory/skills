@@ -27,7 +27,9 @@ If the path does not exist, is not a directory, or contains no `*.md` issue file
 
 Read every `*.md` file under the given path. For each, capture:
 
-- Absolute path
+- Absolute path (for the orchestrator's own bookkeeping — do **not** pass this to subagents)
+- Issue slug (filename without `.md`, e.g. `03-checkout-flow`) — used for branch naming and reporting
+- Full file content as a string — this gets inlined into the subagent's prompt
 - `Status:` line — treat missing, empty, `todo`, `open`, `ready`, or `in-progress` as **not done**; treat `done`, `merged`, `closed`, or `shipped` as **done**
 - `## Blocked by` block — references to other issues in the same directory (paths or `NN-slug` shorthands)
 
@@ -59,12 +61,14 @@ In a **single message**, invoke one `Agent` tool call per issue in the wave so t
 - `description`: one-line task summary (e.g. _"Implement issue 03-checkout-flow"_)
 - `prompt`: a self-contained brief — the subagent has no prior context, so spell everything out
 
-Use this prompt template (substitute the issue's absolute path):
+Use this prompt template (substitute the slug and the full issue content):
 
 <subagent-prompt-template>
-Implement the issue at `{{absolute-issue-path}}`.
+Implement issue `{{issue-slug}}`. The full issue content is inlined below — it is your sole source of truth for acceptance criteria, parent-feature context, and dependency notes. No issue file exists in your worktree; do **not** try to locate one on disk.
 
-**Read the issue file first.** It contains the acceptance criteria, the parent feature reference, and any dependency context. The file lives outside your git worktree (it's under `docs/ephemeral/`, which is gitignored), so read and write it via the absolute path I just gave you.
+<issue>
+{{full-issue-content}}
+</issue>
 
 **Use loose TDD via the `/tdd` skill** — red-green-refactor, vertical slices only, one test → one implementation → repeat. No horizontal slicing (do not write all tests first). Cover happy case, unhappy case, and edge cases liberally.
 
@@ -76,15 +80,14 @@ Implement the issue at `{{absolute-issue-path}}`.
 - Atomic commits with short, expressive messages
 - Push your branch to the remote without asking
 
-**When you are done:**
+**When you are done**, return a final message containing exactly:
 
-- Update the `Status:` line in `{{absolute-issue-path}}` to `done` (write directly to the absolute path — do not commit it; the file is gitignored)
-- Return a final message containing exactly:
-  - `BRANCH: <branch-name>`
-  - `COMMITS:` followed by a bullet list of commit subjects
-  - `RESULT: done` — or `RESULT: blocked — <one-line reason>` if you cannot complete it (ambiguous spec, missing dependency, unresolved acceptance criterion)
+- `ISSUE: {{issue-slug}}`
+- `BRANCH: <branch-name>`
+- `COMMITS:` followed by a bullet list of commit subjects
+- `RESULT: done` — or `RESULT: blocked — <one-line reason>` if you cannot complete it (ambiguous spec, missing dependency, unresolved acceptance criterion)
 
-Do not modify any other issue file. Do not close, rename, or modify the parent feature directory.
+Do not attempt to update any issue file — the orchestrator owns issue-file writes.
 </subagent-prompt-template>
 
 All wave subagents share one tool-call block — never spawn them serially.
@@ -95,7 +98,7 @@ For each subagent that returned `RESULT: done`:
 
 - Inspect its branch
 - Merge or fast-forward it into the orchestrator's working branch — ask the user which strategy if the diff is non-trivial
-- Verify the issue file's `Status:` is `done` in the orchestrator's working tree. The subagent writes directly to the absolute path (the file is gitignored, so worktrees can't carry the change), but verify and update the file yourself if the subagent missed it
+- Update the `Status:` line of the corresponding issue file (you have the absolute path from step 1) to `done`. The orchestrator is the **only** writer of issue files; subagents never touch them.
 
 For each subagent that returned `RESULT: blocked` or errored:
 
@@ -115,6 +118,7 @@ The skill is complete only when **every** issue file in the given path has `Stat
 
 - **Do not** spawn subagents serially when they could run in parallel — they must share one tool-call block.
 - **Do not** feed a subagent the whole backlog — each subagent owns exactly one issue.
+- **Do not** pass the issue's filesystem path (absolute or relative) to the subagent. Inline the full issue content into the prompt. The subagent works entirely within its worktree and must never reach across to the main checkout's filesystem.
 - **Do not** guess at the issues directory if no argument was supplied.
 - **Do not** mark `Status: done` unless the subagent explicitly returned `RESULT: done`.
 - **Do not** continue past a wave if any subagent in that wave failed without user direction.
