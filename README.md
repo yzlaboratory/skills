@@ -55,6 +55,7 @@ In any project where you want to use these skills, run `/setup-kira-skills-in-pr
 - Configure the issue tracker as local markdown under `docs/ephemeral/` (gitignored)
 - Set up single-context domain docs (`CONTEXT.md` + `docs/adr/`)
 - Scaffold `docs/specs/` with the strict-Gherkin spec template and README
+- Create `docs/prd/` as the home for product requirements documents
 - Add the relevant pointers to your `CLAUDE.md`
 
 You're ready to go.
