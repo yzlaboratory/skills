@@ -1,6 +1,6 @@
 ---
 name: setup-kira-skills-in-project
-description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, and `docs/specs/` with the strict-Gherkin spec template and README. Also adds `docs/ephemeral`, `docs/agents`, `docs/specs`, and `docs/OOS.md` to `.gitignore` (only `CONTEXT.md` and `docs/adr/` are committed). Run before first use of `to-spec`, `create-alignment-and-refine-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, or spec convention.
+description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, and `docs/specs/` with the strict-Gherkin spec template and README. Also adds `docs/ephemeral` to `.gitignore`. Run before first use of `to-spec`, `create-alignment-and-refine-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, or spec convention.
 disable-model-invocation: true
 ---
 
@@ -26,7 +26,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `docs/agents/` — does this skill's prior output already exist?
 - `docs/ephemeral/` — does the issue directory already exist?
 - `docs/specs/_template.md` and `docs/specs/README.md` — does the spec convention already exist?
-- `.gitignore` — does it already exclude `docs/ephemeral`, `docs/agents`, `docs/specs`, and `docs/OOS.md`?
+- `.gitignore` — does it already exclude `docs/ephemeral`?
 
 ### 2. Confirm and edit
 
@@ -34,7 +34,7 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to `CLAUDE.md`
 - The contents of `docs/agents/issue-tracker.md` and `docs/agents/domain.md`
-- The `.gitignore` lines to add (`docs/ephemeral/`, `docs/agents/`, `docs/specs/`, `docs/OOS.md`) — only `CONTEXT.md` and `docs/adr/` get committed
+- The `.gitignore` line to add (`docs/ephemeral/`)
 
 Let them edit before writing.
 
@@ -76,18 +76,9 @@ Then write the two docs files using the seed templates in this skill folder as a
 
 **Update `.gitignore`:**
 
-The following paths must be ignored — only `CONTEXT.md` and `docs/adr/` are committed:
-
-- `docs/ephemeral/`
-- `docs/agents/`
-- `docs/specs/`
-- `docs/OOS.md`
-
-For each path:
-
-- If `.gitignore` doesn't exist, create it with the missing entries.
-- If it exists and doesn't already exclude the path (with or without trailing slash), append the line.
-- If it already excludes the path, leave it alone.
+- If `.gitignore` doesn't exist, create it with `docs/ephemeral/` as the only line.
+- If it exists and doesn't already exclude `docs/ephemeral` (or `docs/ephemeral/`), append the line.
+- If it already excludes that path, leave it alone.
 
 **Create the `docs/ephemeral/` directory** if it doesn't exist (so issues have a home on first use).
 
