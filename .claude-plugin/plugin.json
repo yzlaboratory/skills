@@ -2,13 +2,13 @@
   "name": "kira-skills",
   "skills": [
     "./skills/engineering/create-alignment-and-refine-docs",
+    "./skills/engineering/create-prd-after-alignment",
     "./skills/engineering/diagnose",
     "./skills/engineering/implement-issues",
     "./skills/engineering/improve-codebase-architecture",
     "./skills/engineering/setup-kira-skills-in-project",
     "./skills/engineering/tdd",
     "./skills/engineering/to-issues",
-    "./skills/engineering/to-prd",
     "./skills/engineering/zoom-out"
   ]
 }
