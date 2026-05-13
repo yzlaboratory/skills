@@ -1,6 +1,6 @@
 ---
 name: setup-kira-skills-in-project
-description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, and `docs/specs/` with the strict-Gherkin spec template and README. Also adds `docs/ephemeral` to `.gitignore`. Run before first use of `create-alignment-and-refine-docs`, `to-issues`, `to-prd`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, or spec convention.
+description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, `docs/specs/` with the strict-Gherkin spec template and README, and `docs/prd/` for product requirements documents. Also adds `docs/ephemeral` to `.gitignore`. Run before first use of `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, spec convention, or PRD location.
 disable-model-invocation: true
 ---
 
@@ -11,6 +11,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker** — always local markdown under `docs/ephemeral/` (gitignored)
 - **Domain docs** — always single-context (`CONTEXT.md` + `docs/adr/`)
 - **Specs** — strict Gherkin in markdown under `docs/specs/`, governed by `_template.md` + `README.md`
+- **PRDs** — markdown under `docs/prd/`, one file per feature, authored by `/create-prd-after-alignment`
 
 This is a deterministic skill: there are no choices to present. Explore, confirm with the user, then write.
 
@@ -26,6 +27,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `docs/agents/` — does this skill's prior output already exist?
 - `docs/ephemeral/` — does the issue directory already exist?
 - `docs/specs/_template.md` and `docs/specs/README.md` — does the spec convention already exist?
+- `docs/prd/` — does the PRD directory already exist?
 - `.gitignore` — does it already exclude `docs/ephemeral`?
 
 ### 2. Confirm and edit
@@ -62,6 +64,10 @@ Single-context layout (`CONTEXT.md` + `docs/adr/` at repo root). See `docs/agent
 ### Specs
 
 Strict Gherkin in markdown under `docs/specs/`. The convention is `docs/specs/README.md`; new specs start from `docs/specs/_template.md`.
+
+### PRDs
+
+Product requirements documents live under `docs/prd/`, one markdown file per feature. They are the culmination of an alignment session and link out to the ADRs and specs they depend on. Authored by `/create-prd-after-alignment` and consumed by `/to-issues`.
 ```
 
 Then write the two docs files using the seed templates in this skill folder as a starting point:
@@ -81,6 +87,8 @@ Then write the two docs files using the seed templates in this skill folder as a
 - If it already excludes that path, leave it alone.
 
 **Create the `docs/ephemeral/` directory** if it doesn't exist (so issues have a home on first use).
+
+**Create the `docs/prd/` directory** if it doesn't exist (so PRDs have a home on first use). No template is scaffolded — `/create-prd-after-alignment` carries the structure.
 
 ### 4. Done
 
