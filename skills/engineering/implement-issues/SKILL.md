@@ -9,7 +9,7 @@ Orchestrate parallel implementation of every implementation issue under a featur
 
 This is the natural follow-up to `/to-issues`: that skill produces the backlog under the feature ticket, this skill burns it down.
 
-## The feature ticket
+## The feature ticket and the feature branch
 
 Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. If that block is absent, stop and ask the user to run `/setup-kira-skills-in-project` first.
 
@@ -21,14 +21,16 @@ If you can identify no feature ticket, **stop immediately** and reply:
 
 If the feature ticket has no child issues, stop and tell the user (run `/to-issues` first).
 
+**Get onto the feature branch.** The feature branch (`<ticket>-<slug>`) carries the ADRs and `CONTEXT.md` that `/create-alignment-and-refine-docs` committed for this feature. Check it out if you're not already on it, and make sure its working tree is clean and every alignment commit is in place. Each worktree subagent branches from this branch's HEAD (the project sets `worktree.baseRef: head`) — anything missing or uncommitted here is invisible to them.
+
 ## Process
 
 ### 1. Survey the backlog and start
 
 Fetch every child of the feature ticket from the tracker (GitHub sub-issues / Jira Subtasks). For each, capture:
 
-- Tracker reference and a slug (e.g. `03-checkout-flow`) — used for branch naming and reporting
-- Full issue body as a string — this gets inlined into the subagent's prompt
+- Tracker reference (issue number / Subtask key) — the subagent will use this to fetch the issue itself
+- A slug (e.g. `03-checkout-flow`) — used for branch naming and reporting
 - Tracker state — treat a **closed** child as already **done**; an **open** child as **not done**. The orchestrator never changes tracker state itself.
 - `## Blocked by` block — references to other children of the same feature ticket
 
@@ -56,18 +58,21 @@ Print the wave (size + issue titles) so the user can see what's running, but do 
 In a **single message**, invoke one `Agent` tool call per issue in the wave so they run concurrently. For each:
 
 - `subagent_type`: `general-purpose` unless the user named a coding-specific agent
-- `isolation: "worktree"` — each subagent works in its own git worktree, so concurrent edits cannot collide on tracked files
+- `isolation: "worktree"` — each subagent works in its own git worktree. The project sets `worktree.baseRef: head`, so the worktree branches from the orchestrator's current HEAD — the feature branch — and the subagent sees the alignment ADRs and `CONTEXT.md`. Concurrent edits cannot collide on tracked files.
 - `description`: one-line task summary (e.g. _"Implement issue 03-checkout-flow"_)
 - `prompt`: a self-contained brief — the subagent has no prior context, so spell everything out
 
-Use this prompt template (substitute the slug and the full issue body):
+Use this prompt template (substitute the slug, the tracker reference, and the tracker-specific fetch command):
 
 <subagent-prompt-template>
-Implement issue `{{issue-slug}}`. The full issue body is inlined below — it is your sole source of truth for acceptance criteria, parent-feature context, and dependency notes. Do **not** try to fetch it from the tracker or locate a file on disk.
+Implement issue `{{issue-slug}}`.
 
-<issue>
-{{full-issue-body}}
-</issue>
+**First, fetch the issue from the tracker** — it is your sole source of truth for acceptance criteria, parent-feature context, and dependency notes:
+
+- GitHub: `gh issue view {{issue-reference}}`
+- Jira: read Subtask `{{issue-reference}}` via the Atlassian MCP
+
+Do not implement anything until you have read the full issue.
 
 **Use loose TDD via the `/tdd` skill** — red-green-refactor, vertical slices only, one test → one implementation → repeat. No horizontal slicing (do not write all tests first). Cover happy case, unhappy case, and edge cases liberally.
 
@@ -86,7 +91,7 @@ Implement issue `{{issue-slug}}`. The full issue body is inlined below — it is
 - `COMMITS:` followed by a bullet list of commit subjects
 - `RESULT: done` — or `RESULT: blocked — <one-line reason>` if you cannot complete it (ambiguous spec, missing dependency, unresolved acceptance criterion)
 
-Do not touch the tracker — the orchestrator owns all tracker interaction.
+Read the issue from the tracker, but do **not** edit it or change its state — the orchestrator owns all tracker writes.
 </subagent-prompt-template>
 
 All wave subagents share one tool-call block — never spawn them serially.
@@ -118,7 +123,8 @@ The skill is complete only when **every** child issue has been implemented (clos
 
 - **Do not** spawn subagents serially when they could run in parallel — they must share one tool-call block.
 - **Do not** feed a subagent the whole backlog — each subagent owns exactly one issue.
-- **Do not** give a subagent the tracker reference or ask it to fetch the issue. Inline the full issue body into the prompt. The subagent works entirely within its worktree and never touches the tracker.
+- **Do not** inline the issue body into the prompt. Give the subagent the issue's tracker reference and let it fetch the issue itself (`gh issue view` / Atlassian MCP) — the tracker is the single source of truth.
+- **Do not** run the wave from any branch other than the feature branch. Worktrees branch from the orchestrator's HEAD; off the feature branch, subagents lose the alignment ADRs and `CONTEXT.md`.
 - **Do not** guess at the feature ticket if none was supplied and the branch doesn't name one.
 - **Do not** treat an issue as done unless the subagent explicitly returned `RESULT: done` (or the tracker already had it closed).
 - **Do not** change tracker state — issues stay open; the orchestrator only reads.
@@ -130,3 +136,4 @@ The skill is complete only when **every** child issue has been implemented (clos
 - **Cyclic blockers** — stop, print the cycle, ask the user to fix the issues on the tracker.
 - **Two issues in the same wave touch the same files** — merge conflict on reconcile is the symptom. The DAG should prevent this; if it doesn't, escalate so the user can re-author the blockers.
 - **Subagent says it's done but tests are red on the merged branch** — surface this; the subagent's claim of "done" is not authoritative if CI disagrees. Treat as `RESULT: blocked` and ask the user.
+- **Subagent can't see the alignment ADRs / `CONTEXT.md`** — its worktree was branched from `origin/main` instead of the feature branch. Cause: the orchestrator wasn't on the feature branch, or the project's `worktree.baseRef` isn't `head` (run `/setup-kira-skills-in-project`). Stop, fix it, re-run.

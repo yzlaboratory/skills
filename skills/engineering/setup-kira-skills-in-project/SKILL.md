@@ -26,8 +26,9 @@ There are no other choices to present. Everything else is deterministic.
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
 - `CLAUDE.md` at the repo root — does it exist? Is there already an `## Agent skills` section in it?
+- `.claude/settings.json` — does it exist? Does it already set `worktree.baseRef`?
 - `CONTEXT.md` and `docs/adr/` — the in-repo domain docs (don't create them; they're created lazily by other skills).
-- Stale artifacts from an older setup — `docs/specs/`, `docs/prd/`, `docs/ephemeral/`, `docs/agents/`. These directories are no longer used. If any exist, note them for step 4.
+- Stale artifacts from an older setup — `docs/specs/`, `docs/prd/`, `docs/ephemeral/`, `docs/agents/`. These directories are no longer used. If any exist, note them for the final step.
 
 ### 2. Gather the mode details
 
@@ -86,6 +87,18 @@ A feature branch names the Story it implements: `<STORY-KEY>-<slug>` (e.g. `PROJ
 Before exploring the codebase, read `CONTEXT.md` (domain glossary) and the ADRs under `docs/adr/` that touch the area you're working in. These are the only planning docs committed to the repo. If they don't exist yet, proceed silently — they're created lazily by `/create-alignment-and-refine-docs`. Use the glossary's vocabulary in all output; flag any output that contradicts an ADR.
 </jira-block>
 
-### 4. Done
+### 4. Set the worktree base ref
+
+`/implement-issues` fans work out to subagents that each run in a git worktree. Those worktrees must branch from the **feature branch** — which carries the alignment ADRs and `CONTEXT.md` — not from `origin/main`. Set this in `.claude/settings.json` (merge into the existing JSON; create the file if absent):
+
+```json
+{
+  "worktree": { "baseRef": "head" }
+}
+```
+
+With `head`, a worktree branches from the orchestrator's current HEAD. `/implement-issues` runs on the feature branch, so its subagents inherit it. If `worktree.baseRef` is already set to something else, surface the conflict to the user rather than overwriting it.
+
+### 5. Done
 
 Tell the user setup is complete and which engineering skills now read this block. If you found stale `docs/specs/`, `docs/prd/`, `docs/ephemeral/`, or `docs/agents/` directories in step 1, point them out: they were used by the previous local-docs setup and can be deleted — say so, but do **not** delete them yourself. Likewise, any `docs/ephemeral/` line in `.gitignore` is now harmless but unused.
