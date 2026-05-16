@@ -83,7 +83,7 @@ flowchart TD
 5. **`/to-issues`** — slice the feature ticket's PRD into tracer-bullet issues, published as child issues (GitHub sub-issues / Jira Subtasks) of the feature ticket.
 6. **Implement** — pick one:
    - **`/tdd`** in this same conversation, one issue at a time.
-   - **`/implement-issues`** to fan the whole backlog out to parallel `/tdd` subagents, each working in its own git worktree. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate.
+   - **`/implement-issues`** to fan the whole backlog out to parallel subagents, each implementing one issue in its own git worktree. It asks once how subagents should implement — TDD, test-after, direct, `/kira-style-coding`, or a custom prompt — then waves spawn automatically as blockers clear, with no per-wave gate.
 
 Once a feature's PR merges to `main`, its feature ticket and issues are stale — nothing closes them automatically.
 
@@ -112,7 +112,7 @@ When you and the agent are aligned but the code still breaks, you need feedback 
 
 When a feature ticket has a backlog of child issues (typically produced by `/to-issues`) and you want them all implemented without babysitting each one.
 
-- [`/implement-issues`](./skills/engineering/implement-issues/SKILL.md) — orchestrates parallel `/tdd` subagents, one per issue per wave, each in its own worktree. Invoking the skill is the approval; waves spawn automatically as blockers clear, with no per-wave gate.
+- [`/implement-issues`](./skills/engineering/implement-issues/SKILL.md) — orchestrates parallel subagents, one per issue per wave, each in its own worktree. Asks once how subagents should implement, then waves spawn automatically as blockers clear, with no per-wave gate.
 
 ### Architectural drift
 
@@ -129,8 +129,9 @@ Agents accelerate software entropy. The counterweight is investing in design eve
 - **[create-alignment-and-refine-docs](./skills/engineering/create-alignment-and-refine-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, writes the spec into the feature ticket, and updates `CONTEXT.md` and ADRs inline.
 - **[create-prd-after-alignment](./skills/engineering/create-prd-after-alignment/SKILL.md)** — Synthesise a PRD from the just-completed alignment session — the ADRs you confirmed, the spec you authored, and the implementation decisions that crystallised — and write it into the feature ticket. No fresh interview; this skill is the natural follow-up to `/create-alignment-and-refine-docs`.
 - **[diagnose](./skills/engineering/diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
-- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every child issue under a feature ticket: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate. Takes the feature ticket, or derives it from the current branch.
+- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every child issue under a feature ticket: spawns one subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. Asks once how subagents should implement — TDD, test-after, direct, kira-style-coding, or a custom prompt — then waves spawn automatically as blockers clear, with no per-wave gate. Takes the feature ticket, or derives it from the current branch.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
+- **[kira-style-coding](./skills/engineering/kira-style-coding/SKILL.md)** — Implement code in Kira's personal style: KISS, clean code, and names that tell the reader both the what and the why. Offered as an implementation approach by `/implement-issues`.
 - **[setup-kira-skills-in-project](./skills/engineering/setup-kira-skills-in-project/SKILL.md)** — Pick the project's tracker mode (Jira or GitHub Issues) and write the `## Agent skills` block into `CLAUDE.md` that the other engineering skills consume. Run once per repo before using `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `implement-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
 - **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
 - **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break a feature ticket's PRD into independently-grabbable issues using vertical slices, published as child issues of the feature ticket. Takes the feature ticket, or derives it from the current branch.
