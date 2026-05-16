@@ -29,5 +29,5 @@ A product requirements document — the readable synthesis of an alignment sessi
 
 ## Flagged ambiguities
 
-- "issue tracker" / "backlog" were previously used for the local-markdown `docs/ephemeral/` convention — resolved: planning artifacts now live in an external **Tracker** (Jira or GitHub); the local convention is retired.
+- "issue tracker" / "backlog" were previously used for the retired local-markdown convention — resolved: planning artifacts now live in an external **Tracker** (Jira or GitHub).
 - "ticket" is ambiguous between the parent and the child — resolved: the parent is a **Feature ticket**; the child is an **Issue**.
