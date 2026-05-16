@@ -76,6 +76,7 @@ Specs, PRDs, and issues live in Jira, project `<KEY>`.
 - **Feature ticket** — a Jira Story, created by a human and passed to `/create-alignment-and-refine-docs`. **Leave the Story's own description untouched.** The feature's planning docs are written as **comments** on the Story — a separate comment each for `## PRD`, `## Spec` (strict Gherkin), and `## Out of scope`. To update one, edit its existing comment (matched by the heading); create the comment if it doesn't exist yet.
 - **Issue** — a Jira Subtask of that Story. One tracer-bullet vertical slice, produced by `/to-issues`.
 - Use the Atlassian MCP for all tracker reads and writes.
+- The code itself lives on **Bitbucket** — pull requests are Bitbucket PRs, not GitHub. Tracker (Jira) and code host (Bitbucket) are separate systems; skills that open or read a PR target Bitbucket.
 - Nothing is closed automatically. Once a feature's PR merges to `main`, its Story and Subtasks are simply stale — ignore them.
 
 ### Branch naming

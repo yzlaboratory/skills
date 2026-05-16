@@ -11,6 +11,8 @@ This is the natural follow-up to `/to-issues`: that skill produces the backlog u
 
 **One feature, one PR.** The feature ticket — which carries the PRD and the spec — corresponds to exactly one pull request: the feature branch (`<ticket>-<slug>`) against `main`. Every child issue lands as commits on that single PR, and each commit names the issue it implements. That PR is how the orchestrator knows, on any run, which issues are already done.
 
+The PR lives on whichever host the project's code is on, which depends on the tracker mode: **GitHub mode** → a GitHub PR, managed with the `gh` CLI. **Jira mode** → a **Bitbucket** PR (the tracker is Jira, but the code host is Bitbucket — see the `## Agent skills` block in `CLAUDE.md`), managed via the Bitbucket REST API. Pushing the branch is plain `git` either way.
+
 ## The feature ticket and the feature branch
 
 Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. If that block is absent, stop and ask the user to run `/setup-kira-skills-in-project` first.
@@ -43,7 +45,7 @@ This is the **only** question the skill asks before starting. The chosen approac
 
 ### 1. Survey the backlog and start
 
-Locate the feature PR: `gh pr list --head <feature-branch> --state all --json number,url`. It may not exist yet on a first run.
+Locate the feature PR — **GitHub mode**: `gh pr list --head <feature-branch> --state all --json number,url`; **Jira mode**: query the Bitbucket REST API for a PR whose source branch is `<feature-branch>`. It may not exist yet on a first run. (Done-ness itself you read from `git log`, below — that is host-agnostic.)
 
 Fetch every child of the feature ticket from the tracker (GitHub sub-issues / Jira Subtasks). For each, capture:
 
@@ -123,7 +125,7 @@ For each subagent that returned `RESULT: done`:
 
 - Inspect its branch and confirm its tests, if the approach produced any, are green.
 - Merge or fast-forward it into the feature branch — ask the user which strategy if the diff is non-trivial. Preserve the subagent's commits; each already references its child issue, and the orchestrator must not squash that reference away.
-- Push the feature branch. On the first push of the run, open the one feature PR (`gh pr create`, base `main`, body referencing the feature ticket); every later push just updates it.
+- Push the feature branch with `git`. On the first push of the run, open the one feature PR — **GitHub mode**: `gh pr create --base main`; **Jira mode**: create a **Bitbucket** PR (source `<feature-branch>`, destination `main`) via the Bitbucket REST API. Its body references the feature ticket. Every later push just updates the PR.
 - Mark the child issue **Pending Review** — its work has now landed on the PR and is waiting for human review:
   - **GitHub** — `gh issue edit <child> --add-label "Pending Review"` (create the label first with `gh label create "Pending Review"` if the repo doesn't have it).
   - **Jira** — move the Subtask to "Pending Review" via the Atlassian MCP — a status transition if the workflow has one, otherwise a `Pending Review` label.
