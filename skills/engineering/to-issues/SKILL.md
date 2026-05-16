@@ -1,48 +1,44 @@
 ---
 name: to-issues
-description: Break a PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Requires a PRD file under `docs/prd/` as an argument — the PRD is the source of truth for what to slice. Reads `docs/specs/` (behavioral specs), `docs/adr/` (architectural decisions), `docs/OOS.md` (non-goals), and `CONTEXT.md` (domain glossary) as supporting inputs alongside the PRD. Use when user wants to convert an approved PRD into implementation tickets.
+description: Break a feature ticket's PRD into independently-grabbable implementation issues on the project tracker using tracer-bullet vertical slices. Reads the PRD, spec, and out-of-scope list from the feature ticket, plus `docs/adr/` and `CONTEXT.md` from the repo. Publishes the slices as sub-issues (GitHub) or Subtasks (Jira) of the feature ticket. Use when user wants to convert an aligned feature ticket into implementation tickets.
 ---
 
 # To Issues
 
-Break a PRD into independently-grabbable issues using vertical slices (tracer bullets).
+Break a feature ticket's PRD into independently-grabbable implementation issues using vertical slices (tracer bullets). Each issue is published as a child of the feature ticket — a GitHub sub-issue or a Jira Subtask.
 
-The issue tracker location and `docs/prd/` should already exist — run `/setup-kira-skills-in-project` if not.
+## The feature ticket
 
-## Required argument
+Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. If that block is absent, stop and ask the user to run `/setup-kira-skills-in-project` first.
 
-A path to a PRD file under `docs/prd/` (e.g. `docs/prd/checkout-flow.md`).
+Identify the feature ticket: use the argument if one was passed (issue number, Story key, or URL); otherwise derive it from the current branch name (`<ticket>-<slug>`).
 
-If no path is provided, **stop immediately** and reply:
+If you can identify no feature ticket, **stop immediately** and reply:
 
-> This skill requires a PRD file as an argument (e.g. `docs/prd/<feature>.md`). If you don't have a PRD yet, run `/create-prd-after-alignment` first. Re-run with the PRD path as an argument.
+> This skill needs a feature ticket — pass its issue number / Story key, or run it on a feature branch. The ticket must already hold a PRD; if it doesn't, run `/create-prd-after-alignment` first.
 
-Do not guess. Do not pick "the most recent file under `docs/prd/`". Do not synthesise a PRD on the fly — that's `/create-prd-after-alignment`. Refuse and ask.
-
-If the path does not exist, is not a file, or is not under `docs/prd/`, stop and tell the user.
+Do not guess. Do not synthesise a PRD on the fly — that's `/create-prd-after-alignment`.
 
 ## Process
 
 ### 1. Gather context
 
-Read the PRD file passed as the argument **in full**. It is the source of truth for:
+Fetch the feature ticket from the tracker and read it **in full**. It is the source of truth for:
 
-- What user stories are in scope
-- Which specs (`docs/specs/*.md`) define the behavioral surface — follow every link in the PRD's "Specs covered" section
-- Which ADRs (`docs/adr/*.md`) constrain implementation — follow every link in the PRD's "Architectural decisions" section
-- What's explicitly out of scope (the PRD's "Out of scope" section, and the OOS entries it references)
-- What implementation and testing decisions have already been made
+- The `## PRD` section — what user stories are in scope, what implementation and testing decisions are made
+- The `## Spec` section — the Gherkin scenarios that define the behavioral surface
+- The `## Out of scope` section — what **not** to slice
 
-**Also read the supporting documentation set** even if not linked from the PRD — these are the canonical references for vocabulary and constraints:
+If the ticket has no `## PRD` section, stop and tell the user to run `/create-prd-after-alignment` first.
+
+**Also read the in-repo documentation set:**
 
 - `CONTEXT.md` — the domain glossary; issue titles and descriptions must use this vocabulary
-- `docs/specs/*.md` — behavioral specs the PRD links to (and any others that touch the same area)
-- `docs/adr/*.md` — architectural decisions; slices must not contradict any ADR
-- `docs/OOS.md` — explicit non-goals; do **not** draft slices for anything listed here
+- `docs/adr/*.md` — architectural decisions; slices must not contradict any ADR. The PRD references the ADRs it depends on by repo path — read those.
 
-If the PRD links to specs or ADRs that don't exist on disk, stop and surface the broken links — the alignment that produced this PRD has drifted from the artifacts it references.
+If the PRD references ADRs that don't exist on disk, stop and surface the broken references — the alignment that produced this PRD has drifted.
 
-Use the union of all available sources, anchored by the PRD. A Gherkin spec tells you which scenarios exist; CONTEXT.md tells you what to call things; ADRs tell you which technical paths are already chosen; OOS.md tells you what NOT to slice; the PRD tells you which of the above are actually in scope **for this feature**.
+A Gherkin scenario tells you which behaviors exist; CONTEXT.md tells you what to call things; ADRs tell you which technical paths are chosen; the out-of-scope list tells you what NOT to slice; the PRD tells you which of the above are in scope for this feature.
 
 ### 2. Explore the codebase (optional)
 
@@ -80,17 +76,16 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Publish the issues to the issue tracker
+### 5. Publish the issues to the tracker
 
-For each approved slice, publish a new issue to the issue tracker. Use the issue body template below.
+For each approved slice, create a child of the feature ticket:
 
-Publish issues in dependency order (blockers first) so you can reference real issue identifiers in the "Blocked by" field.
+- **GitHub** — `gh issue create`, then link it with `gh issue edit <feature-ticket> --add-sub-issue <new-issue>`.
+- **Jira** — create a Subtask of the Story via the Atlassian MCP.
+
+Use the issue body template below. Publish in dependency order (blockers first) so you can reference real issue identifiers in the "Blocked by" field.
 
 <issue-template>
-## Parent
-
-A reference to the parent issue on the issue tracker (if the source was an existing issue, otherwise omit this section).
-
 ## What to build
 
 A concise description of this vertical slice. Describe the end-to-end behavior, not layer-by-layer implementation.
@@ -103,10 +98,9 @@ A concise description of this vertical slice. Describe the end-to-end behavior, 
 
 ## Blocked by
 
-- A reference to the blocking ticket (if any)
+- A reference to the blocking issue (if any)
 
 Or "None - can start immediately" if no blockers.
-
 </issue-template>
 
-Do NOT close or modify any parent issue.
+Do NOT close or modify the feature ticket itself — only create children under it.
