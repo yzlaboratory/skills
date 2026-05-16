@@ -23,7 +23,7 @@ Do not guess. Do not synthesise a PRD on the fly — that's `/create-prd-after-a
 
 ### 1. Gather context
 
-Fetch the feature ticket from the tracker and read it **in full**. It is the source of truth for:
+Fetch the feature ticket from the tracker and read it **in full** — in Jira mode that means reading its comments too, where the spec, PRD, and out-of-scope list live. It is the source of truth for:
 
 - The `## PRD` section — what user stories are in scope, what implementation and testing decisions are made
 - The `## Spec` section — the Gherkin scenarios that define the behavioral surface

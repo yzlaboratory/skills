@@ -91,7 +91,7 @@ As the grilling lands decisions, edit the feature ticket through the tracker:
 - **A new behavior needs a spec.** Write it into the ticket's `## Spec` section following [SPEC-FORMAT.md](./SPEC-FORMAT.md) (Gherkin discipline, prose-vs-fenced-block placement, ADR cross-linking) exactly.
 - **A decision is "yes, but not in v1" — or any other deliberate deferral.** Add it to the ticket's `## Out of scope` section immediately as an explicitly deferred item, with one short paragraph explaining what was deferred and why. Deferrals are cheap to add and easy to lose if batched.
 
-The spec lives in the feature ticket's body (GitHub) or description (Jira) under a `## Spec` heading; the out-of-scope list under `## Out of scope`. Edit those sections in place — don't open a second ticket.
+Where the spec and out-of-scope list physically live depends on the tracker — `## Spec` and `## Out of scope` sections of the issue body for GitHub, a separate Story comment for each in Jira (see the `## Agent skills` block in `CLAUDE.md`). In Jira, **never edit the Story's own description.** Either way, edit the spec and out-of-scope list in place — don't open a second ticket.
 
 ### Offer ADRs sparingly
 

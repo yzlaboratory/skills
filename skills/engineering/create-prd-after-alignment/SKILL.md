@@ -38,9 +38,9 @@ You may ask 1–2 narrow confirmation questions about the module list before pub
 
 ### 4. Write the PRD into the feature ticket
 
-Add the `## PRD` section to the feature ticket's body (GitHub) or description (Jira), above the existing `## Spec` and `## Out of scope` sections. If a `## PRD` section already exists, surface it and ask whether to replace, extend, or abort.
+Write the `## PRD` into the feature ticket — as a section of the issue body for GitHub (above the existing `## Spec` and `## Out of scope` sections), or as a dedicated Story comment for Jira (see the `## Agent skills` block in `CLAUDE.md`; never touch the Story's own description). If a `## PRD` already exists, surface it and ask whether to replace, extend, or abort.
 
-Use the template below. The spec and the out-of-scope list are sibling sections of the **same ticket** — do not duplicate them here; the reader scrolls down. Reference ADRs by their repo path so the reader can open them.
+Use the template below. The spec and the out-of-scope list already live on the **same feature ticket** — do not duplicate them here. Reference ADRs by their repo path so the reader can open them.
 
 <prd-template>
 ## PRD

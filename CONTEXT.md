@@ -9,17 +9,17 @@ The external system that holds a repo's specs, PRDs, and implementation issues. 
 _Avoid_: issue tracker, backlog, backlog manager
 
 **Feature ticket**:
-The tracker artifact that holds, for one feature, its spec, its PRD, and its out-of-scope list. A Jira **Story** or a GitHub parent **issue**. Created or received by `create-alignment-and-refine-docs`; the PRD section is added by `create-prd-after-alignment`.
+The tracker artifact that holds, for one feature, its spec, its PRD, and its out-of-scope list. A GitHub parent **issue** (the three live as sections of its body) or a Jira **Story** (they live as separate comments on it — the Story's own description is left alone). Created or received by `create-alignment-and-refine-docs`; the PRD is added by `create-prd-after-alignment`.
 
 **Issue**:
 A single tracer-bullet implementation slice — a Jira **Subtask** or a GitHub **sub-issue**, always a child of a **Feature ticket**. Produced by `to-issues`; implemented by `tdd` or `implement-issues`.
 _Avoid_: ticket (reserve "feature ticket" for the parent)
 
 **Spec**:
-Strict Gherkin in markdown, the behavioral source of truth for a feature. Lives in the `## Spec` section of a **Feature ticket**. Authored by `create-alignment-and-refine-docs`.
+Strict Gherkin in markdown, the behavioral source of truth for a feature. Lives in the `## Spec` of a **Feature ticket** — an issue-body section in GitHub, a Story comment in Jira. Authored by `create-alignment-and-refine-docs`.
 
 **PRD**:
-A product requirements document — the readable synthesis of an alignment session. Lives in the `## PRD` section of a **Feature ticket**, alongside the spec and out-of-scope list. Authored by `create-prd-after-alignment`; consumed by `to-issues`.
+A product requirements document — the readable synthesis of an alignment session. Lives in the `## PRD` of a **Feature ticket**, alongside the spec and out-of-scope list. Authored by `create-prd-after-alignment`; consumed by `to-issues`.
 
 ## Relationships
 
