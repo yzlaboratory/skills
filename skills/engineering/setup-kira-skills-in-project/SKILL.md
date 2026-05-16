@@ -50,7 +50,7 @@ This repo uses Kira's engineering skills. Specs, PRDs, and implementation issues
 
 Specs, PRDs, and issues live in GitHub Issues on `<owner>/<repo>`.
 
-- **Feature ticket** — a GitHub issue. Its **body** holds, for one feature, three sections: `## Spec` (strict Gherkin), `## PRD`, and `## Out of scope`. Created by `/create-alignment-and-refine-docs` (or passed to it if one already exists).
+- **Feature ticket** — a GitHub issue. Its **body** holds, for one feature, three sections in order: `## PRD`, `## Spec` (strict Gherkin), and `## Out of scope`. Created by `/create-alignment-and-refine-docs` (or passed to it if one already exists).
 - **Issue** — a GitHub sub-issue of a feature ticket. One tracer-bullet vertical slice, produced by `/to-issues`.
 - Use the `gh` CLI for all tracker reads and writes. Link a child to its feature ticket with `gh issue edit <feature-ticket> --add-sub-issue <child>`.
 - Nothing is closed automatically. Once a feature's PR merges to `main`, its feature ticket and issues are simply stale — ignore them.
@@ -73,7 +73,7 @@ This repo uses Kira's engineering skills. Specs, PRDs, and implementation issues
 
 Specs, PRDs, and issues live in Jira, project `<KEY>`.
 
-- **Feature ticket** — a Jira Story, created by a human and passed to `/create-alignment-and-refine-docs`. **Leave the Story's own description untouched.** The feature's planning docs are written as **comments** on the Story — a separate comment each for `## Spec` (strict Gherkin), `## PRD`, and `## Out of scope`. To update one, edit its existing comment (matched by the heading); create the comment if it doesn't exist yet.
+- **Feature ticket** — a Jira Story, created by a human and passed to `/create-alignment-and-refine-docs`. **Leave the Story's own description untouched.** The feature's planning docs are written as **comments** on the Story — a separate comment each for `## PRD`, `## Spec` (strict Gherkin), and `## Out of scope`. To update one, edit its existing comment (matched by the heading); create the comment if it doesn't exist yet.
 - **Issue** — a Jira Subtask of that Story. One tracer-bullet vertical slice, produced by `/to-issues`.
 - Use the Atlassian MCP for all tracker reads and writes.
 - Nothing is closed automatically. Once a feature's PR merges to `main`, its Story and Subtasks are simply stale — ignore them.
