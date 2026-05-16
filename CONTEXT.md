@@ -4,22 +4,30 @@ A collection of agent skills (slash commands and behaviors) loaded by Claude Cod
 
 ## Language
 
-**Issue tracker**:
-The local-markdown convention under `docs/ephemeral/` (gitignored) where this skill set hosts a repo's issues. `to-issues` writes to it; `implement-issues` reads from it. PRDs live separately under `docs/prd/` (committed) and are not part of the issue tracker.
-_Avoid_: backlog manager, backlog backend, issue host
+**Tracker**:
+The external system that holds a repo's specs, PRDs, and implementation issues. Each project picks one of two modes — **Jira** (via the Atlassian MCP) or **GitHub Issues** (via the `gh` CLI) — recorded in the `## Agent skills` block of `CLAUDE.md`. Planning docs are deliberately kept out of the source tree; only `CONTEXT.md` and `docs/adr/` are committed.
+_Avoid_: issue tracker, backlog, backlog manager
+
+**Feature ticket**:
+The tracker artifact that holds, for one feature, its spec, its PRD, and its out-of-scope list. A Jira **Story** or a GitHub parent **issue**. Created or received by `create-alignment-and-refine-docs`; the PRD section is added by `create-prd-after-alignment`.
 
 **Issue**:
-A single tracked unit of work inside the **Issue tracker** — a tracer-bullet slice produced by `to-issues` from a PRD.
-_Avoid_: ticket
+A single tracer-bullet implementation slice — a Jira **Subtask** or a GitHub **sub-issue**, always a child of a **Feature ticket**. Produced by `to-issues`; implemented by `tdd` or `implement-issues`.
+_Avoid_: ticket (reserve "feature ticket" for the parent)
+
+**Spec**:
+Strict Gherkin in markdown, the behavioral source of truth for a feature. Lives in the `## Spec` section of a **Feature ticket**. Authored by `create-alignment-and-refine-docs`.
 
 **PRD**:
-A product requirements document under `docs/prd/<feature-slug>.md`. Authored by `create-prd-after-alignment` as the culmination of an alignment session; links out to the ADRs and specs it depends on; consumed by `to-issues` as the required source of truth for what to slice.
+A product requirements document — the readable synthesis of an alignment session. Lives in the `## PRD` section of a **Feature ticket**, alongside the spec and out-of-scope list. Authored by `create-prd-after-alignment`; consumed by `to-issues`.
 
 ## Relationships
 
-- An **Issue tracker** holds many **Issues**
-- A **PRD** produces many **Issues** (via `to-issues`)
+- A **Tracker** holds many **Feature tickets**
+- A **Feature ticket** holds one **Spec**, one **PRD**, and many **Issues**
+- A **PRD** is sliced into many **Issues** (via `to-issues`)
 
 ## Flagged ambiguities
 
-- "backlog" was previously used to mean both the *tool* hosting issues and the *body of work* inside it — resolved: the tool is the **Issue tracker**; "backlog" is no longer used as a domain term.
+- "issue tracker" / "backlog" were previously used for the local-markdown `docs/ephemeral/` convention — resolved: planning artifacts now live in an external **Tracker** (Jira or GitHub); the local convention is retired.
+- "ticket" is ambiguous between the parent and the child — resolved: the parent is a **Feature ticket**; the child is an **Issue**.

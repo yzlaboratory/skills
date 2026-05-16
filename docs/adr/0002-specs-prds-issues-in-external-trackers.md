@@ -1,0 +1,5 @@
+# Specs, PRDs, and issues live in an external tracker
+
+Supersedes ADR-0001. Specs, PRDs, and implementation issues no longer live as local markdown in the source tree; each project routes them to one of two external trackers — Jira (via the Atlassian MCP) or GitHub Issues (via `gh`) — chosen at setup and recorded in `CLAUDE.md`. A feature ticket (Jira Story / GitHub parent issue) holds the spec, PRD, and out-of-scope list; implementation issues are its children (Subtasks / sub-issues). Only `CONTEXT.md` and `docs/adr/` stay committed to the repo.
+
+The local-markdown approach broke down in practice: `docs/ephemeral/` had to be gitignored to stay out of history, which made it invisible to git worktrees — and worktrees are how `implement-issues` parallelises. Putting these artifacts in a tracker makes them reachable from any worktree or machine, keeps the source tree free of ephemeral planning docs, and gives a natural lifecycle: once a feature's PR merges to `main`, its tracker artifacts are simply stale. The trade-off — API auth, rate limits, a fetch round-trip — is accepted in exchange for worktree compatibility and a smaller committed surface.

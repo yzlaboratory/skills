@@ -2,10 +2,10 @@
 
 Agent skills for real engineering work — small, composable slash commands and behaviours loaded by Claude Code.
 
-These skills are adapted from [mattpocock/skills](https://github.com/mattpocock/skills), pruned and reshaped for solo local use:
+These skills are adapted from [mattpocock/skills](https://github.com/mattpocock/skills), pruned and reshaped for solo use:
 
-- Issues live as local markdown under `docs/ephemeral/` (gitignored), not GitHub
-- Domain docs are always single-context (`CONTEXT.md` + `docs/adr/`)
+- Specs, PRDs, and implementation issues live in an external tracker — Jira or GitHub Issues — never in the source tree
+- The only planning docs committed to the repo are the domain glossary (`CONTEXT.md`) and the ADRs (`docs/adr/`)
 - No triage / label state machine
 
 ## Install
@@ -52,11 +52,10 @@ Skills land in `~/.claude/plugins/cache/` and update via `/plugin marketplace up
 
 In any project where you want to use these skills, run `/setup-kira-skills-in-project`. It will:
 
-- Configure the issue tracker as local markdown under `docs/ephemeral/` (gitignored)
-- Set up single-context domain docs (`CONTEXT.md` + `docs/adr/`)
-- Scaffold `docs/specs/` with the strict-Gherkin spec template and README
-- Create `docs/prd/` as the home for product requirements documents
-- Add the relevant pointers to your `CLAUDE.md`
+- Ask which tracker the project uses — **Jira** (via the Atlassian MCP) or **GitHub Issues** (via `gh`)
+- Write the `## Agent skills` block into your `CLAUDE.md`, recording the tracker, the branch-naming convention, and the in-repo domain docs
+
+Specs, PRDs, and issues then live in that tracker; only `CONTEXT.md` and `docs/adr/` are committed to the repo.
 
 You're ready to go.
 
@@ -69,7 +68,7 @@ flowchart TD
     A["One-time install"] --> B["/setup-kira-skills-in-project"]
     B --> C["/create-alignment-and-refine-docs"]
     C --> E["/create-prd-after-alignment"]
-    E --> F["/to-issues (requires PRD)"]
+    E --> F["/to-issues"]
     F --> G{"How to implement?"}
     G -->|one issue at a time<br/>in this conversation| H["/tdd"]
     G -->|whole backlog in parallel| I["/implement-issues"]
@@ -78,13 +77,15 @@ flowchart TD
 **The shape of the chain:**
 
 1. **Install once** — plugin or `install-skills.sh`. Repo-independent.
-2. **`/setup-kira-skills-in-project`** — run once per repo. Creates the conventions every other skill reads from.
-3. **`/create-alignment-and-refine-docs`** — interview-style grilling that aligns you and the agent on terminology and scope, while writing decisions straight into `CONTEXT.md`, `docs/adr/`, `docs/specs/`, and `docs/OOS.md`.
-4. **`/create-prd-after-alignment`** — synthesise a PRD from the alignment session: the ADRs you confirmed, the specs you authored, and the implementation decisions that crystallised. Publishes under `docs/prd/` with links back to every ADR and spec it covers.
-5. **`/to-issues`** — slice the PRD into tracer-bullet issues. Requires a PRD file as an argument; reads ADRs, specs, OOS, and CONTEXT as supporting inputs.
+2. **`/setup-kira-skills-in-project`** — run once per repo. Picks the tracker mode and records it in `CLAUDE.md`.
+3. **`/create-alignment-and-refine-docs`** — interview-style grilling that aligns you and the agent on terminology and scope. Creates (or receives) the feature ticket, writes the spec and out-of-scope list into it, and commits `CONTEXT.md` and `docs/adr/` changes to the repo.
+4. **`/create-prd-after-alignment`** — synthesise a PRD from the alignment session and write it into the feature ticket, alongside the spec and out-of-scope list.
+5. **`/to-issues`** — slice the feature ticket's PRD into tracer-bullet issues, published as child issues (GitHub sub-issues / Jira Subtasks) of the feature ticket.
 6. **Implement** — pick one:
    - **`/tdd`** in this same conversation, one issue at a time.
    - **`/implement-issues`** to fan the whole backlog out to parallel `/tdd` subagents, each working in its own git worktree. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate.
+
+Once a feature's PR merges to `main`, its feature ticket and issues are stale — nothing closes them automatically.
 
 ## What each skill solves
 
@@ -92,7 +93,7 @@ flowchart TD
 
 Agents guess at what you want. The fix is a structured grilling session that interviews you until each branch of the design tree is resolved.
 
-- [`/create-alignment-and-refine-docs`](./skills/engineering/create-alignment-and-refine-docs/SKILL.md) — grilling session that also updates `CONTEXT.md`, ADRs, specs, and OOS inline as decisions crystallise
+- [`/create-alignment-and-refine-docs`](./skills/engineering/create-alignment-and-refine-docs/SKILL.md) — grilling session that writes the spec into the feature ticket and updates `CONTEXT.md` and ADRs inline as decisions crystallise
 
 ### Verbose, jargon-blind agents
 
@@ -109,7 +110,7 @@ When you and the agent are aligned but the code still breaks, you need feedback 
 
 ### A whole backlog to burn down
 
-When you have a directory of issues (typically produced by `/to-issues`) and want them all implemented without babysitting each one.
+When a feature ticket has a backlog of child issues (typically produced by `/to-issues`) and you want them all implemented without babysitting each one.
 
 - [`/implement-issues`](./skills/engineering/implement-issues/SKILL.md) — orchestrates parallel `/tdd` subagents, one per issue per wave, each in its own worktree. Invoking the skill is the approval; waves spawn automatically as blockers clear, with no per-wave gate.
 
@@ -117,7 +118,7 @@ When you have a directory of issues (typically produced by `/to-issues`) and wan
 
 Agents accelerate software entropy. The counterweight is investing in design every day.
 
-- [`/create-prd-after-alignment`](./skills/engineering/create-prd-after-alignment/SKILL.md) — synthesises a PRD from the alignment session, linking out to the ADRs and specs it depends on
+- [`/create-prd-after-alignment`](./skills/engineering/create-prd-after-alignment/SKILL.md) — synthesises a PRD from the alignment session into the feature ticket
 - [`/zoom-out`](./skills/engineering/zoom-out/SKILL.md) — tells the agent to explain code in the context of the whole system
 - [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) — rescue a codebase that's become a ball of mud (run every few days)
 
@@ -125,12 +126,12 @@ Agents accelerate software entropy. The counterweight is investing in design eve
 
 ### Engineering
 
-- **[create-alignment-and-refine-docs](./skills/engineering/create-alignment-and-refine-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md`, ADRs, specs, and OOS inline.
-- **[create-prd-after-alignment](./skills/engineering/create-prd-after-alignment/SKILL.md)** — Synthesise a PRD from the just-completed alignment session — the ADRs you confirmed, the specs you authored, and the implementation decisions that crystallised — and publish it under `docs/prd/`. No fresh interview; this skill is the natural follow-up to `/create-alignment-and-refine-docs`.
+- **[create-alignment-and-refine-docs](./skills/engineering/create-alignment-and-refine-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, writes the spec into the feature ticket, and updates `CONTEXT.md` and ADRs inline.
+- **[create-prd-after-alignment](./skills/engineering/create-prd-after-alignment/SKILL.md)** — Synthesise a PRD from the just-completed alignment session — the ADRs you confirmed, the spec you authored, and the implementation decisions that crystallised — and write it into the feature ticket. No fresh interview; this skill is the natural follow-up to `/create-alignment-and-refine-docs`.
 - **[diagnose](./skills/engineering/diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
-- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every issue in a directory: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate. Requires the issues directory path as an argument.
+- **[implement-issues](./skills/engineering/implement-issues/SKILL.md)** — Orchestrate parallel implementation of every child issue under a feature ticket: spawns one `/tdd` subagent per issue per wave, each in its own worktree, respecting `Blocked by` dependencies until the whole backlog is done. Invoking the skill is the approval — waves spawn automatically as blockers clear, with no per-wave gate. Takes the feature ticket, or derives it from the current branch.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
-- **[setup-kira-skills-in-project](./skills/engineering/setup-kira-skills-in-project/SKILL.md)** — Scaffold the per-repo config (local-markdown issue tracker under `docs/ephemeral/`, single-context domain docs, strict-Gherkin spec template and README under `docs/specs/`, `docs/prd/` for PRDs) that the other engineering skills consume. Run once per repo before using `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
+- **[setup-kira-skills-in-project](./skills/engineering/setup-kira-skills-in-project/SKILL.md)** — Pick the project's tracker mode (Jira or GitHub Issues) and write the `## Agent skills` block into `CLAUDE.md` that the other engineering skills consume. Run once per repo before using `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `implement-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
 - **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
-- **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break a PRD into independently-grabbable issues using vertical slices. Requires a PRD file as an argument; reads `docs/specs/`, `docs/adr/`, `docs/OOS.md`, and `CONTEXT.md` as supporting inputs.
+- **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break a feature ticket's PRD into independently-grabbable issues using vertical slices, published as child issues of the feature ticket. Takes the feature ticket, or derives it from the current branch.
 - **[zoom-out](./skills/engineering/zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
