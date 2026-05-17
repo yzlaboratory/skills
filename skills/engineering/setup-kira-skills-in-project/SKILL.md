@@ -1,19 +1,23 @@
 ---
 name: setup-kira-skills-in-project
-description: Sets up the per-repo conventions the engineering skills assume — `## Agent skills` block in CLAUDE.md, `docs/agents/` for issue tracker and domain doc rules, `docs/specs/` with the strict-Gherkin spec template and README, and `docs/prd/` for product requirements documents. Also adds `docs/ephemeral` to `.gitignore`. Run before first use of `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, domain docs, spec convention, or PRD location.
+description: Sets up the per-repo conventions the engineering skills assume — picks the project's tracker mode (Jira or GitHub Issues) and writes the `## Agent skills` block into CLAUDE.md describing the tracker, the branch-naming convention, and the in-repo domain docs. Run before first use of `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `implement-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the tracker or domain docs.
 disable-model-invocation: true
 ---
 
 # Setup Kira's Skills
 
-Scaffold the per-repo configuration that the engineering skills assume:
+The engineering skills keep ephemeral planning docs — specs, PRDs, and implementation issues — **out of the source tree**. They live in an external tracker instead. Only two artifacts stay committed to the repo: the domain glossary (`CONTEXT.md`) and the architectural decision records (`docs/adr/`).
 
-- **Issue tracker** — always local markdown under `docs/ephemeral/` (gitignored)
-- **Domain docs** — always single-context (`CONTEXT.md` + `docs/adr/`)
-- **Specs** — strict Gherkin in markdown under `docs/specs/`, governed by `_template.md` + `README.md`
-- **PRDs** — markdown under `docs/prd/`, one file per feature, authored by `/create-prd-after-alignment`
+This skill records, in `CLAUDE.md`, which tracker the project uses so every other skill can find specs, PRDs, and issues.
 
-This is a deterministic skill: there are no choices to present. Explore, confirm with the user, then write.
+## The one choice: tracker mode
+
+Ask the user which mode this project uses:
+
+- **GitHub** — specs, PRDs, and issues live in **GitHub Issues** on the repo's `origin` remote. A feature ticket is a GitHub issue; implementation issues are its sub-issues. Tracker access is the `gh` CLI.
+- **Jira** — specs, PRDs, and issues live in **Jira**. A feature ticket is a Jira Story; implementation issues are its Subtasks. Tracker access is the Atlassian MCP.
+
+There are no other choices to present. Everything else is deterministic.
 
 ## Process
 
@@ -22,74 +26,79 @@ This is a deterministic skill: there are no choices to present. Explore, confirm
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
 - `CLAUDE.md` at the repo root — does it exist? Is there already an `## Agent skills` section in it?
-- `CONTEXT.md` at the repo root
-- `docs/adr/` directory
-- `docs/agents/` — does this skill's prior output already exist?
-- `docs/ephemeral/` — does the issue directory already exist?
-- `docs/specs/_template.md` and `docs/specs/README.md` — does the spec convention already exist?
-- `docs/prd/` — does the PRD directory already exist?
-- `.gitignore` — does it already exclude `docs/ephemeral`?
+- `.claude/settings.json` — does it exist? Does it already set `worktree.baseRef`?
+- `CONTEXT.md` and `docs/adr/` — the in-repo domain docs (don't create them; they're created lazily by other skills).
 
-### 2. Confirm and edit
+### 2. Gather the mode details
 
-Show the user a draft of:
+- **GitHub** — confirm `gh` is installed and authenticated (`gh auth status`). Determine the `owner/repo` from `git remote get-url origin`.
+- **Jira** — confirm the Atlassian MCP is available. Ask the user for the Jira **project key** (e.g. `PROJ`).
 
-- The `## Agent skills` block to add to `CLAUDE.md`
-- The contents of `docs/agents/issue-tracker.md` and `docs/agents/domain.md`
-- The `.gitignore` line to add (`docs/ephemeral/`)
+### 3. Confirm and write
 
-Let them edit before writing.
+Show the user the `## Agent skills` block you're about to write (the matching variant below, with placeholders filled in). Let them edit it before writing.
 
-The spec-convention files (`docs/specs/_template.md` and `docs/specs/README.md`) are copied verbatim from this skill's bundled defaults — they're a single canonical scaffold that `create-alignment-and-refine-docs` relies on when it writes new specs, so we don't draft them. Mention to the user that they'll be written and can be edited later.
+Then edit `CLAUDE.md` (create it if it doesn't exist). This skill set targets Claude Code only; `AGENTS.md` is not used. If an `## Agent skills` block already exists, replace its contents in-place rather than appending a duplicate. Don't overwrite user edits to surrounding sections.
 
-### 3. Write
-
-Edit `CLAUDE.md` (create it if it doesn't exist). This skill set targets Claude Code only; `AGENTS.md` is not used.
-
-If an `## Agent skills` block already exists, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to surrounding sections.
-
-The block:
-
-```markdown
+<github-block>
 ## Agent skills
 
-### Issue tracker
+This repo uses Kira's engineering skills. Specs, PRDs, and implementation issues are kept **out of the source tree** — they live in the tracker below. Only `CONTEXT.md` and `docs/adr/` are committed.
 
-Issues live as local markdown under `docs/ephemeral/` (gitignored). See `docs/agents/issue-tracker.md`.
+### Tracker — GitHub Issues
 
-### Domain docs
+Specs, PRDs, and issues live in GitHub Issues on `<owner>/<repo>`.
 
-Single-context layout (`CONTEXT.md` + `docs/adr/` at repo root). See `docs/agents/domain.md`.
+- **Feature ticket** — a GitHub issue. Its **body** holds, for one feature, three sections in order: `## PRD`, `## Spec` (strict Gherkin), and `## Out of scope`. Created by `/create-alignment-and-refine-docs` (or passed to it if one already exists).
+- **Issue** — a GitHub sub-issue of a feature ticket. One tracer-bullet vertical slice, produced by `/to-issues`.
+- Use the `gh` CLI for all tracker reads and writes. Link a child to its feature ticket with `gh issue edit <feature-ticket> --add-sub-issue <child>`.
+- Nothing is closed automatically. Once a feature's PR merges to `main`, its feature ticket and issues are simply stale — ignore them.
 
-### Specs
+### Branch naming
 
-Strict Gherkin in markdown under `docs/specs/`. The convention is `docs/specs/README.md`; new specs start from `docs/specs/_template.md`.
+A feature branch names the ticket it implements: `<issue-number>-<slug>` (e.g. `42-checkout-flow`). Implementation branches name their issue the same way. Skills derive the current ticket from the branch name; worktrees inherit it.
 
-### PRDs
+### Domain docs (in-repo)
 
-Product requirements documents live under `docs/prd/`, one markdown file per feature. They are the culmination of an alignment session and link out to the ADRs and specs they depend on. Authored by `/create-prd-after-alignment` and consumed by `/to-issues`.
+Before exploring the codebase, read `CONTEXT.md` (domain glossary) and the ADRs under `docs/adr/` that touch the area you're working in. These are the only planning docs committed to the repo. If they don't exist yet, proceed silently — they're created lazily by `/create-alignment-and-refine-docs`. Use the glossary's vocabulary in all output; flag any output that contradicts an ADR.
+</github-block>
+
+<jira-block>
+## Agent skills
+
+This repo uses Kira's engineering skills. Specs, PRDs, and implementation issues are kept **out of the source tree** — they live in the tracker below. Only `CONTEXT.md` and `docs/adr/` are committed.
+
+### Tracker — Jira
+
+Specs, PRDs, and issues live in Jira, project `<KEY>`.
+
+- **Feature ticket** — a Jira Story, created by a human and passed to `/create-alignment-and-refine-docs`. **Leave the Story's own description untouched.** The feature's planning docs are written as **comments** on the Story — a separate comment each for `## PRD`, `## Spec` (strict Gherkin), and `## Out of scope`. To update one, edit its existing comment (matched by the heading); create the comment if it doesn't exist yet.
+- **Issue** — a Jira Subtask of that Story. One tracer-bullet vertical slice, produced by `/to-issues`.
+- Use the Atlassian MCP for all tracker reads and writes.
+- The code itself lives on **Bitbucket** — pull requests are Bitbucket PRs, not GitHub. Tracker (Jira) and code host (Bitbucket) are separate systems; skills that open or read a PR target Bitbucket.
+- Nothing is closed automatically. Once a feature's PR merges to `main`, its Story and Subtasks are simply stale — ignore them.
+
+### Branch naming
+
+A feature branch names the Story it implements: `<STORY-KEY>-<slug>` (e.g. `PROJ-42-checkout-flow`). Implementation branches name their Subtask the same way. Skills derive the current ticket from the branch name; worktrees inherit it.
+
+### Domain docs (in-repo)
+
+Before exploring the codebase, read `CONTEXT.md` (domain glossary) and the ADRs under `docs/adr/` that touch the area you're working in. These are the only planning docs committed to the repo. If they don't exist yet, proceed silently — they're created lazily by `/create-alignment-and-refine-docs`. Use the glossary's vocabulary in all output; flag any output that contradicts an ADR.
+</jira-block>
+
+### 4. Set the worktree base ref
+
+`/implement-issues` fans work out to subagents that each run in a git worktree. Those worktrees must branch from the **feature branch** — which carries the alignment ADRs and `CONTEXT.md` — not from `origin/main`. Set this in `.claude/settings.json` (merge into the existing JSON; create the file if absent):
+
+```json
+{
+  "worktree": { "baseRef": "head" }
+}
 ```
 
-Then write the two docs files using the seed templates in this skill folder as a starting point:
+With `head`, a worktree branches from the orchestrator's current HEAD. `/implement-issues` runs on the feature branch, so its subagents inherit it. If `worktree.baseRef` is already set to something else, surface the conflict to the user rather than overwriting it.
 
-- [issue-tracker.md](./issue-tracker.md) — local-markdown issue tracker (under `docs/ephemeral/`)
-- [domain.md](./domain.md) — domain doc consumer rules + single-context layout
+### 5. Done
 
-**Scaffold `docs/specs/`** — copy verbatim from this skill's bundled defaults, but only when the destination file does not already exist (the user may have customised theirs):
-
-- [spec-defaults/_template.md](./spec-defaults/_template.md) → `docs/specs/_template.md`
-- [spec-defaults/README.md](./spec-defaults/README.md) → `docs/specs/README.md`
-
-**Update `.gitignore`:**
-
-- If `.gitignore` doesn't exist, create it with `docs/ephemeral/` as the only line.
-- If it exists and doesn't already exclude `docs/ephemeral` (or `docs/ephemeral/`), append the line.
-- If it already excludes that path, leave it alone.
-
-**Create the `docs/ephemeral/` directory** if it doesn't exist (so issues have a home on first use).
-
-**Create the `docs/prd/` directory** if it doesn't exist (so PRDs have a home on first use). No template is scaffolded — `/create-prd-after-alignment` carries the structure.
-
-### 4. Done
-
-Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` and `docs/specs/*.md` directly later — re-running this skill is only necessary if they want to restart from scratch.
+Tell the user setup is complete and which engineering skills now read this block.
