@@ -9,7 +9,7 @@ Orchestrate parallel implementation of every implementation issue under a featur
 
 This is the natural follow-up to `/to-issues`: that skill produces the backlog under the feature ticket, this skill burns it down.
 
-**One feature, one PR.** The feature ticket — which carries the PRD and the spec — corresponds to exactly one pull request: the feature branch (`<ticket>-<slug>`) against `main`. Every child issue lands as commits on that single PR, and each commit names the issue it implements. That PR is how the orchestrator knows, on any run, which issues are already done.
+**One feature, one PR.** The feature ticket — which carries the PRD and the spec — corresponds to exactly one pull request: the feature branch (GitHub mode: `<ticket>-<slug>`; Jira mode: `feature/<STORY-KEY>-<slug>` or `hotfix/<STORY-KEY>-<slug>`) against `main`. Every child issue lands as commits on that single PR, and each commit names the issue it implements. That PR is how the orchestrator knows, on any run, which issues are already done.
 
 The PR lives on whichever host the project's code is on, which depends on the tracker mode: **GitHub mode** → a GitHub PR, managed with the `gh` CLI. **Jira mode** → a **Bitbucket** PR (the tracker is Jira, but the code host is Bitbucket — see the `## Agent skills` block in `CLAUDE.md`), managed via the Bitbucket REST API. Pushing the branch is plain `git` either way.
 
@@ -17,7 +17,7 @@ The PR lives on whichever host the project's code is on, which depends on the tr
 
 Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. If that block is absent, stop and ask the user to run `/setup-kira-skills-in-project` first.
 
-Identify the feature ticket: use the argument if one was passed (issue number, Story key, or URL); otherwise derive it from the current branch name (`<ticket>-<slug>`).
+Identify the feature ticket: use the argument if one was passed (issue number, Story key, or URL); otherwise derive it from the current branch name. In Jira mode, strip the leading `feature/` or `hotfix/` segment before parsing `<STORY-KEY>-<slug>`; in GitHub mode the branch is plain `<ticket>-<slug>`.
 
 If you can identify no feature ticket, **stop immediately** and reply:
 
@@ -25,7 +25,7 @@ If you can identify no feature ticket, **stop immediately** and reply:
 
 If the feature ticket has no child issues, stop and tell the user (run `/to-issues` first).
 
-**Get onto the feature branch.** The feature branch (`<ticket>-<slug>`) carries the ADRs and `CONTEXT.md` that `/create-alignment-and-refine-docs` committed for this feature. Check it out if you're not already on it, and make sure its working tree is clean and every alignment commit is in place. Each worktree subagent branches from this branch's HEAD (the project sets `worktree.baseRef: head`) — anything missing or uncommitted here is invisible to them.
+**Get onto the feature branch.** The feature branch (GitHub: `<ticket>-<slug>`; Jira: `feature/<STORY-KEY>-<slug>` or `hotfix/<STORY-KEY>-<slug>`) carries the ADRs and `CONTEXT.md` that `/create-alignment-and-refine-docs` committed for this feature. Check it out if you're not already on it, and make sure its working tree is clean and every alignment commit is in place. Each worktree subagent branches from this branch's HEAD (the project sets `worktree.baseRef: head`) — anything missing or uncommitted here is invisible to them.
 
 ## Choose the implementation approach
 
@@ -82,7 +82,7 @@ In a **single message**, invoke one `Agent` tool call per issue in the wave so t
 - `description`: one-line task summary (e.g. _"Implement issue 03-checkout-flow"_)
 - `prompt`: a self-contained brief — the subagent has no prior context, so spell everything out
 
-Use this prompt template (substitute the slug, the tracker reference, the tracker-specific fetch command, and the implementation approach chosen above):
+Use this prompt template (substitute the slug, the tracker reference, the tracker-specific fetch command, the implementation approach chosen above, and `{{branch-prefix}}` — in Jira mode, the same `feature/` or `hotfix/` prefix the feature branch carries, including the trailing slash; in GitHub mode, the empty string):
 
 <subagent-prompt-template>
 Implement issue `{{issue-slug}}`.
@@ -103,8 +103,8 @@ Whatever the approach, build in vertical slices — end-to-end behaviour, not ho
 - Use the domain glossary in `CONTEXT.md` for naming
 - Respect ADRs in `docs/adr/` that apply to the area you're touching
 - Prettier formats all frontend code
-- Work on a branch named `{{issue-reference}}-{{issue-slug}}`
-- Atomic commits with short, expressive messages — **every commit message must reference this issue (`{{issue-reference}}`)** so the orchestrator can tell which commits implement it
+- Work on a branch named `{{branch-prefix}}{{issue-reference}}-{{issue-slug}}`
+- Atomic commits with short, expressive messages. **Every commit message must reference this issue (`{{issue-reference}}`)** so the orchestrator can tell which commits implement it. In Jira mode, the reference must be the very first token of the subject, followed by a colon and a space: `{{issue-reference}}: <message>` (Bitbucket Smart Commit format)
 - Push your branch to the remote without asking
 
 **When you are done**, return a final message containing exactly:

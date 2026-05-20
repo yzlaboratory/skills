@@ -11,7 +11,7 @@ Break a feature ticket's PRD into independently-grabbable implementation issues 
 
 Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. If that block is absent, stop and ask the user to run `/setup-kira-skills-in-project` first.
 
-Identify the feature ticket: use the argument if one was passed (issue number, Story key, or URL); otherwise derive it from the current branch name (`<ticket>-<slug>`).
+Identify the feature ticket: use the argument if one was passed (issue number, Story key, or URL); otherwise derive it from the current branch name. In Jira mode, strip the leading `feature/` or `hotfix/` segment before parsing `<STORY-KEY>-<slug>`; in GitHub mode the branch is plain `<ticket>-<slug>`.
 
 If you can identify no feature ticket, **stop immediately** and reply:
 
