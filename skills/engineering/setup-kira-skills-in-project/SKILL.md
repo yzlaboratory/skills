@@ -61,7 +61,7 @@ Specs, PRDs, and issues live in GitHub Issues on `<owner>/<repo>`.
 
 ### Branch naming
 
-A feature branch names the ticket it implements: `<issue-number>-<slug>` (e.g. `42-checkout-flow`). Implementation branches name their issue the same way. Skills derive the current ticket from the branch name; worktrees inherit it.
+A feature branch names the ticket it implements: `<issue-number>-<slug>` (e.g. `42-checkout-flow`). All commits for that feature — including every sub-issue's work — land on this single branch. Sub-issues do not get their own named branches; subagents implement them in worktrees that branch off the feature branch and merge back into it. Skills derive the current ticket from the feature branch name; worktrees inherit it.
 
 ### Domain docs (in-repo)
 
@@ -90,13 +90,13 @@ A feature branch names the Story it implements with a Git Flow prefix:
 - `feature/<STORY-KEY>-<slug>` — default, for normal work (e.g. `feature/PROJ-42-checkout-flow`).
 - `hotfix/<STORY-KEY>-<slug>` — for urgent fixes; use when the Story is a Bug or the user explicitly calls it a hotfix (e.g. `hotfix/PROJ-99-payment-double-charge`).
 
-Implementation branches name their Subtask the same way and inherit the feature branch's prefix (a Subtask under `feature/PROJ-42-checkout-flow` becomes `feature/PROJ-43-stripe-webhook`).
+All commits for that Story — including every Subtask's work — land on this single feature branch. Subtasks do not get their own named branches; subagents implement them in worktrees that branch off the feature branch and merge back into it.
 
-Skills derive the current ticket from the branch name by stripping the leading `feature/` or `hotfix/` segment, then parsing `<STORY-KEY>-<slug>`. Worktrees inherit the branch and thus the prefix.
+Skills derive the current Story from the feature branch name by stripping the leading `feature/` or `hotfix/` segment, then parsing `<STORY-KEY>-<slug>`. Worktrees inherit the branch and thus the prefix.
 
 ### Commit messages
 
-Every commit message starts with the Jira key of the ticket it implements, followed by a colon and a space: `<STORY-KEY>: <message>` (e.g. `PROJ-43: add webhook signature verification`). This is the Bitbucket Smart Commit convention — it links each commit to the right Subtask or Story automatically. On alignment commits (ADRs, `CONTEXT.md`) made on the feature branch directly, use the feature Story's key.
+Every commit message starts with the Jira key of the ticket it implements, followed by a single space: `<STORY-KEY> <message>` (e.g. `PROJ-43 add webhook signature verification`). This is the Bitbucket Smart Commit convention — it links each commit to the right Subtask or Story automatically. On alignment commits (ADRs, `CONTEXT.md`) made on the feature branch directly, use the feature Story's key.
 
 ### Domain docs (in-repo)
 
