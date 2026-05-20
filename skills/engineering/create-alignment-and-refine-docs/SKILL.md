@@ -23,7 +23,7 @@ The spec, the out-of-scope list, and (later) the PRD all live in one **feature t
 
 - The Story already exists and must be passed to this skill (key, URL, or branch already named after it). If none was given, stop and ask the user for the Story key.
 
-Then put yourself on the feature branch: `<ticket>-<slug>` (e.g. `42-checkout-flow` or `PROJ-42-checkout-flow`). If you're already on that branch, stay. Never grill on `main`.
+Then put yourself on the feature branch: `<ticket>-<slug>` in GitHub mode (e.g. `42-checkout-flow`); `feature/<STORY-KEY>-<slug>` or `hotfix/<STORY-KEY>-<slug>` in Jira mode (e.g. `feature/PROJ-42-checkout-flow`). Default to `feature/`; use `hotfix/` only when the Story is a Bug or the user explicitly calls it a hotfix. If you're already on that branch, stay. Never grill on `main`.
 
 The spec and out-of-scope edits below go into the feature ticket via the tracker. ADRs and `CONTEXT.md` edits are committed to the repo on this branch.
 

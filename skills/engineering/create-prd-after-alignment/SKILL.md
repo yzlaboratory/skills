@@ -15,7 +15,7 @@ Do **not** run a fresh grilling session here. If the user has not yet aligned, s
 
 ### 1. Find the feature ticket
 
-Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. Derive the feature ticket from the current branch name (`<ticket>-<slug>`). If you cannot — not on a feature branch, or no `## Agent skills` block — stop and ask the user which feature ticket to use.
+Read the tracker mode from the `## Agent skills` block in `CLAUDE.md`. Derive the feature ticket from the current branch name. In Jira mode, strip the leading `feature/` or `hotfix/` segment before parsing `<STORY-KEY>-<slug>`; in GitHub mode the branch is plain `<ticket>-<slug>`. If you cannot — not on a feature branch, or no `## Agent skills` block — stop and ask the user which feature ticket to use.
 
 ### 2. Load the alignment outcome
 
