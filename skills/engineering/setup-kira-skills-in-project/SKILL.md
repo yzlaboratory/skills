@@ -94,6 +94,10 @@ Implementation branches name their Subtask the same way and inherit the feature 
 
 Skills derive the current ticket from the branch name by stripping the leading `feature/` or `hotfix/` segment, then parsing `<STORY-KEY>-<slug>`. Worktrees inherit the branch and thus the prefix.
 
+### Commit messages
+
+Every commit message starts with the Jira key of the ticket it implements, followed by a colon and a space: `<STORY-KEY>: <message>` (e.g. `PROJ-43: add webhook signature verification`). This is the Bitbucket Smart Commit convention — it links each commit to the right Subtask or Story automatically. On alignment commits (ADRs, `CONTEXT.md`) made on the feature branch directly, use the feature Story's key.
+
 ### Domain docs (in-repo)
 
 Before exploring the codebase, read `CONTEXT.md` (domain glossary) and the ADRs under `docs/adr/` that touch the area you're working in. These are the only planning docs committed to the repo. If they don't exist yet, proceed silently — they're created lazily by `/create-alignment-and-refine-docs`. Use the glossary's vocabulary in all output; flag any output that contradicts an ADR.

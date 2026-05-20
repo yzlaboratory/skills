@@ -104,7 +104,7 @@ Whatever the approach, build in vertical slices — end-to-end behaviour, not ho
 - Respect ADRs in `docs/adr/` that apply to the area you're touching
 - Prettier formats all frontend code
 - Work on a branch named `{{branch-prefix}}{{issue-reference}}-{{issue-slug}}`
-- Atomic commits with short, expressive messages — **every commit message must reference this issue (`{{issue-reference}}`)** so the orchestrator can tell which commits implement it
+- Atomic commits with short, expressive messages. **Every commit message must reference this issue (`{{issue-reference}}`)** so the orchestrator can tell which commits implement it. In Jira mode, the reference must be the very first token of the subject, followed by a colon and a space: `{{issue-reference}}: <message>` (Bitbucket Smart Commit format)
 - Push your branch to the remote without asking
 
 **When you are done**, return a final message containing exactly:
