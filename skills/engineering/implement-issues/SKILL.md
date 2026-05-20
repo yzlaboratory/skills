@@ -82,7 +82,7 @@ In a **single message**, invoke one `Agent` tool call per issue in the wave so t
 - `description`: one-line task summary (e.g. _"Implement issue 03-checkout-flow"_)
 - `prompt`: a self-contained brief — the subagent has no prior context, so spell everything out
 
-Use this prompt template (substitute the slug, the tracker reference, the tracker-specific fetch command, the implementation approach chosen above, and `{{branch-prefix}}` — in Jira mode, the same `feature/` or `hotfix/` prefix the feature branch carries, including the trailing slash; in GitHub mode, the empty string):
+Use this prompt template (substitute the slug, the tracker reference, the tracker-specific fetch command, and the implementation approach chosen above):
 
 <subagent-prompt-template>
 Implement issue `{{issue-slug}}`.
@@ -103,9 +103,9 @@ Whatever the approach, build in vertical slices — end-to-end behaviour, not ho
 - Use the domain glossary in `CONTEXT.md` for naming
 - Respect ADRs in `docs/adr/` that apply to the area you're touching
 - Prettier formats all frontend code
-- Work on a branch named `{{branch-prefix}}{{issue-reference}}-{{issue-slug}}`
+- You're working in a worktree the orchestrator created off the feature branch — commit into it as normal; do **not** create or switch branches yourself. The orchestrator merges your worktree's commits back into the feature branch.
 - Atomic commits with short, expressive messages. **Every commit message must reference this issue (`{{issue-reference}}`)** so the orchestrator can tell which commits implement it. In Jira mode, the reference must be the very first token of the subject, followed by a single space: `{{issue-reference}} <message>` (Bitbucket Smart Commit format)
-- Push your branch to the remote without asking
+- Do **not** push — the orchestrator pushes the feature branch after reconciliation
 
 **When you are done**, return a final message containing exactly:
 
