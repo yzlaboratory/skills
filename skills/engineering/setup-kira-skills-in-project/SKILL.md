@@ -25,7 +25,7 @@ There are no other choices to present. Everything else is deterministic.
 
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
-- `CLAUDE.md` at the repo root — does it exist? Is there already an `## Agent skills` section in it?
+- `CLAUDE.md` at the repo root **and** `~/.claude/CLAUDE.md` — do they exist? Is there already an `## Agent skills` section in either? (The destination is mode-dependent; see step 3.)
 - `.claude/settings.json` — does it exist? Does it already set `worktree.baseRef`?
 - `CONTEXT.md` and `docs/adr/` — the in-repo domain docs (don't create them; they're created lazily by other skills).
 
@@ -38,7 +38,12 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 Show the user the `## Agent skills` block you're about to write (the matching variant below, with placeholders filled in). Let them edit it before writing.
 
-Then edit `CLAUDE.md` (create it if it doesn't exist). This skill set targets Claude Code only; `AGENTS.md` is not used. If an `## Agent skills` block already exists, replace its contents in-place rather than appending a duplicate. Don't overwrite user edits to surrounding sections.
+The destination depends on tracker mode:
+
+- **GitHub mode** — write to the project's `CLAUDE.md` at the repo root (create it if it doesn't exist). The block is repo-specific (it names `owner/repo`) and belongs alongside the code.
+- **Jira mode** — write to the user's global `~/.claude/CLAUDE.md` (create it if it doesn't exist). Do not touch the project's `CLAUDE.md`. Jira/Bitbucket setups are typically org-wide rather than per-repo, and the block is the same across every repo the user works in for that org.
+
+This skill set targets Claude Code only; `AGENTS.md` is not used. If an `## Agent skills` block already exists in the destination file, replace its contents in-place rather than appending a duplicate. Don't overwrite user edits to surrounding sections.
 
 <github-block>
 ## Agent skills
@@ -66,7 +71,7 @@ Before exploring the codebase, read `CONTEXT.md` (domain glossary) and the ADRs 
 <jira-block>
 ## Agent skills
 
-This repo uses Kira's engineering skills. Specs, PRDs, and implementation issues are kept **out of the source tree** — they live in the tracker below. Only `CONTEXT.md` and `docs/adr/` are committed.
+Kira's engineering skills are used across the Jira/Bitbucket projects on this machine. Specs, PRDs, and implementation issues are kept **out of the source tree** — they live in the tracker below. Only `CONTEXT.md` and `docs/adr/` are committed to each repo.
 
 ### Tracker — Jira
 
@@ -101,4 +106,4 @@ With `head`, a worktree branches from the orchestrator's current HEAD. `/impleme
 
 ### 5. Done
 
-Tell the user setup is complete and which engineering skills now read this block.
+Tell the user setup is complete, where the `## Agent skills` block was written (project `CLAUDE.md` for GitHub mode, `~/.claude/CLAUDE.md` for Jira mode), and which engineering skills now read this block.
