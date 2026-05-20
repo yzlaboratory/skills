@@ -96,7 +96,7 @@ Skills derive the current ticket from the branch name by stripping the leading `
 
 ### Commit messages
 
-Every commit message starts with the Jira key of the ticket it implements, followed by a colon and a space: `<STORY-KEY>: <message>` (e.g. `PROJ-43: add webhook signature verification`). This is the Bitbucket Smart Commit convention — it links each commit to the right Subtask or Story automatically. On alignment commits (ADRs, `CONTEXT.md`) made on the feature branch directly, use the feature Story's key.
+Every commit message starts with the Jira key of the ticket it implements, followed by a single space: `<STORY-KEY> <message>` (e.g. `PROJ-43 add webhook signature verification`). This is the Bitbucket Smart Commit convention — it links each commit to the right Subtask or Story automatically. On alignment commits (ADRs, `CONTEXT.md`) made on the feature branch directly, use the feature Story's key.
 
 ### Domain docs (in-repo)
 
