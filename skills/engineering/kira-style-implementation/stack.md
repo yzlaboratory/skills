@@ -65,7 +65,7 @@ Boot 4.0 on Spring Framework 7 / Jakarta EE 11.
 
 - **Thin controllers.** Controllers handle HTTP only — routing, status codes, (de)serialization. Business logic lives in the service layer; persistence in repositories.
 - **DTOs at the boundary, never entities.** Use `record` DTOs with Bean Validation (`@Valid`, `@NotNull`, `@Size`, `@Email`).
-- **Errors as `ProblemDetail` (RFC 9457).** Centralize in a `@RestControllerAdvice` (extend `ResponseEntityExceptionHandler`) or enable `spring.mvc.problemdetails.enabled=true`.
+- **Errors as `ProblemDetail` (RFC 7807, obsoleted by 9457).** Centralize in a `@RestControllerAdvice` (extend `ResponseEntityExceptionHandler`) or enable `spring.mvc.problemdetails.enabled=true`.
 - **Use first-class API versioning** (new in Boot 4) — path / header / query / media-type strategies in MVC and WebFlux. Don't hand-roll it.
 - **Declarative HTTP clients** (`@HttpExchange` interfaces) over boilerplate `WebClient`/`RestTemplate`.
 - **Constructor injection with `final` fields** — not field injection.
