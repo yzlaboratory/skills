@@ -55,4 +55,4 @@ A name's job is to answer on sight: why does this exist, what does it do, how is
 
 ## Tests
 
-Follow loose TDD: cover the happy case, the unhappy cases, and the edges. Tests exercise the module through its interface — a deep interface gives a small test surface that covers a lot, the same leverage callers get. See [tdd/SKILL.md](../tdd/SKILL.md).
+Follow loose TDD: cover the happy case, the unhappy cases, and the edges. Tests exercise the module through its interface — a deep interface gives a small test surface that covers a lot, the same leverage callers get.

@@ -2,7 +2,7 @@
 
 Abstraction is a tool you reach for when a problem demands it — never a checklist you apply because a class or pattern *could* exist. Every layer, interface, and pattern you add is something the next reader must learn. It has to pay for that cost by hiding more complexity than it introduces (a deep module). If it doesn't, it's classitis: many shallow units that add surface and subtract clarity.
 
-The vocabulary here — depth, leverage, seam, adapter — is shared with [`../improve-codebase-architecture/LANGUAGE.md`](../improve-codebase-architecture/LANGUAGE.md). The depth idea lives in [`../tdd/deep-modules.md`](../tdd/deep-modules.md).
+The vocabulary here — depth, leverage, seam, adapter — is shared with [`../improve-codebase-architecture/LANGUAGE.md`](../improve-codebase-architecture/LANGUAGE.md). The depth idea lives in [`../improve-codebase-architecture/deep-modules.md`](../improve-codebase-architecture/deep-modules.md).
 
 ## The earned-abstraction test
 

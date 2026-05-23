@@ -1,6 +1,6 @@
 ---
 name: setup-kira-skills-in-project
-description: Sets up the per-repo conventions the engineering skills assume — picks the project's tracker mode (Jira or GitHub Issues) and writes the `## Agent skills` block into CLAUDE.md describing the tracker, the branch-naming convention, and the in-repo domain docs. Run before first use of `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `implement-issues`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the tracker or domain docs.
+description: Sets up the per-repo conventions the engineering skills assume — picks the project's tracker mode (Jira or GitHub Issues) and writes the `## Agent skills` block into CLAUDE.md describing the tracker, the branch-naming convention, and the in-repo domain docs. Run before first use of `create-alignment-and-refine-docs`, `create-prd-after-alignment`, `to-issues`, `implement-issues`, `diagnose`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the tracker or domain docs.
 disable-model-invocation: true
 ---
 
