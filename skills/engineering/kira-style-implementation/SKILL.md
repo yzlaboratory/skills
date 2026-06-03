@@ -51,7 +51,7 @@ A name's job is to answer on sight: why does this exist, what does it do, how is
 
 **Functions — name the what, as an outcome.** A verb phrase precise enough that a caller predicts the behaviour without opening the body: `calculateInvoiceTotal()`, `evictExpiredSessions()` — not `process()`, `handleData()`, `doStuff()`.
 
-**Comments — carry the why.** Names cover the *what*; they can't cover the *why*. Reserve comments for what the code genuinely can't express: why this approach over an obvious alternative, a non-obvious constraint, a business rule or edge case, a pointer to the ADR or issue behind a surprising decision. Do **not** restate the code (`i++; // increment i`) — such comments rot the moment the code changes.
+**Comments — default to none.** Let the code carry itself. Names cover the *what*; they can't cover the *why*. Add a comment only when the *why* has no other home — and never one that restates the *what*. Before writing any comment, try first to make it unnecessary: a clearer name, a smaller function, an extracted variable. If a comment survives that, it should explain something the code genuinely can't: why this approach over an obvious alternative, a non-obvious constraint, a business rule or edge case, a pointer to the ADR or issue behind a surprising decision. Do **not** restate the code (`i++; // increment i`) — such comments rot the moment the code changes. When in doubt, delete it and let the code speak.
 
 ## Tests
 
