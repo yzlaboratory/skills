@@ -21,7 +21,16 @@ Do not guess. Do not synthesise a PRD on the fly — that's `/create-prd-after-a
 
 ## Process
 
-### 1. Gather context
+### 1. Ask the branch strategy
+
+Before anything else, ask the user how the implementation issues should be branched, and remember the answer for the rest of this invocation:
+
+- **Shared parent branch** (default) — all subtasks are implemented on a single branch that starts with the parent feature ticket's key/number.
+- **Branch per subtask** — each subtask is implemented on its own branch.
+
+Record the chosen strategy. It is written verbatim into a **Branch strategy** line on every issue created in step 6, so whoever picks up a subtask knows where to do the work.
+
+### 2. Gather context
 
 Fetch the feature ticket from the tracker and read it **in full** — in Jira mode that means reading its comments too, where the spec, PRD, and out-of-scope list live. It is the source of truth for:
 
@@ -40,11 +49,11 @@ If the PRD references ADRs that don't exist on disk, stop and surface the broken
 
 A Gherkin scenario tells you which behaviors exist; CONTEXT.md tells you what to call things; ADRs tell you which technical paths are chosen; the out-of-scope list tells you what NOT to slice; the PRD tells you which of the above are in scope for this feature.
 
-### 2. Explore the codebase (optional)
+### 3. Explore the codebase (optional)
 
 If you have not already explored the codebase, do so to understand the current state of the code. Issue titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
 
-### 3. Draft vertical slices
+### 4. Draft vertical slices
 
 Break the plan into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
 
@@ -58,7 +67,7 @@ Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an
 - After the infrastructure tracer bullets, bundle related behavioral scenarios into feature slices. A single Gherkin Scenario is usually too fine to be its own slice; group the scenarios that together demonstrate one capability into one slice.
 </vertical-slice-rules>
 
-### 4. Quiz the user
+### 5. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each slice, show:
 
@@ -76,7 +85,7 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Publish the issues to the tracker
+### 6. Publish the issues to the tracker
 
 For each approved slice, create a child of the feature ticket:
 
@@ -101,6 +110,10 @@ A concise description of this vertical slice. Describe the end-to-end behavior, 
 - A reference to the blocking issue (if any)
 
 Or "None - can start immediately" if no blockers.
+
+## Branch strategy
+
+The branching approach chosen for this batch (step 1) — either "Own branch for this subtask" or "Shared parent branch `<parent ticket key/number>`". State it explicitly so the implementer knows where to do the work.
 </issue-template>
 
 Do NOT close or modify the feature ticket itself — only create children under it.
