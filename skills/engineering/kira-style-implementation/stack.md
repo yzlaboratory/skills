@@ -30,6 +30,10 @@ The principles in [SKILL.md](SKILL.md) and [abstraction.md](abstraction.md) stil
 - **Let the React Compiler memoize.** Where the compiler is enabled, stop hand-writing `useMemo` / `useCallback` / `React.memo`; add them back only against a measured problem.
 - Sources: [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect) · [Escape Hatches](https://react.dev/learn/escape-hatches) · [React 19 release](https://react.dev/blog/2024/12/05/react-19) · [React Compiler](https://react.dev/learn/react-compiler).
 
+### Escape hatches
+
+- **No silent suppression.** Never disable a lint rule (`eslint-disable`), silence the type checker (`// @ts-expect-error`, `// @ts-ignore`), reach for `autoFocus`, or cast to `any` without an inline comment stating the explicit, justified reason. An unexplained suppression is a defect — fix the underlying issue, or justify the exception in one line. This is one of the few places a comment is *required* (it carries a *why* the code can't), so make it a real reason, not a restatement of the rule being disabled.
+
 ### TypeScript
 
 - **`strict` is non-negotiable** in `tsconfig`.
