@@ -51,7 +51,34 @@ A name's job is to answer on sight: why does this exist, what does it do, how is
 
 **Functions — name the what, as an outcome.** A verb phrase precise enough that a caller predicts the behaviour without opening the body: `calculateInvoiceTotal()`, `evictExpiredSessions()` — not `process()`, `handleData()`, `doStuff()`.
 
-**Comments — default to none.** Let the code carry itself. Names cover the *what*; they can't cover the *why*. Add a comment only when the *why* has no other home — and never one that restates the *what*. Before writing any comment, try first to make it unnecessary: a clearer name, a smaller function, an extracted variable. If a comment survives that, it should explain something the code genuinely can't: why this approach over an obvious alternative, a non-obvious constraint, a business rule or edge case, a pointer to the ADR or issue behind a surprising decision. Do **not** restate the code (`i++; // increment i`) — such comments rot the moment the code changes. When in doubt, delete it and let the code speak.
+**Comments — see the section below.** Names cover the *what*; the *why* is the only thing a comment may carry.
+
+## Comments: only the why the code can't carry
+
+Default: **no comment.** A comment is the last resort, reached only after you've tried to make it unnecessary. Before writing one, in order:
+
+1. Can a clearer **name** carry it? Rename, delete the comment.
+2. Is it narrating a *block*? **Extract the block into a function (or hook) whose name says what the comment said, then delete the comment.** This is mandatory, not optional — a comment that introduces a block is a function waiting to be named.
+3. Only if the surviving meaning is a *why* no name can hold — a non-obvious rationale, a real constraint, a business rule, the reason this approach beat an obvious alternative — does a comment earn its place.
+
+**Never write these — delete them on sight:**
+
+- **File / module / JSDoc header blocks** that summarise a file whose names already describe it.
+- **Provenance or history** — "moved from X", "recreated locally", "was Y in the toolkit", ticket numbers. That belongs in the commit message and the PR, never in the source.
+- **Restatements of the *what*** — `// debounced search` above a debounced search, `// increment i` above `i++`, `// flatten back to the API shape` above a `toStepData` mapper. These rot the moment the code changes.
+
+**What a kept comment looks like** — it explains a decision the reader would otherwise question, and the code genuinely cannot express it:
+
+```
+✅ // Validate the name but raise the error on the companyRegistration object
+   // itself, not the name field — that's the path the autocomplete binds to,
+   // so fieldState.error surfaces it like any single field.
+
+🔴 /** Company-name field rule. Recreated locally — it was useCompanyNameSchema
+    *  from @lexware/lexbank-react-toolkit, used nowhere else… */   ← provenance, delete
+```
+
+**Cleanup pass.** Comments accumulate while you draft. Before committing, re-read the diff and delete every comment that step 1 or step 2 above could remove. The default is none; a comment that survives this pass should be a rare, deliberate *why*.
 
 ## Tests
 
