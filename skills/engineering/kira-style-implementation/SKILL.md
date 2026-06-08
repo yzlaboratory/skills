@@ -82,4 +82,10 @@ Default: **no comment.** A comment is the last resort, reached only after you've
 
 ## Tests
 
-Follow loose TDD: cover the happy case, the unhappy cases, and the edges. Tests exercise the module through its interface — a deep interface gives a small test surface that covers a lot, the same leverage callers get.
+Follow loose TDD: cover the happy case, the unhappy cases, and the edges — but first decide *what is worth testing*.
+
+**Test behaviour you own, not the framework.** A test earns its place when it protects logic that could plausibly break: a validation rule, a mapper, a branch, a state transition. A unit that only forwards to the framework or the design system — a thin field binding a value to a controlled input, a component that just renders its props — has no behaviour of *yours* to protect. A test there exercises React or the library, not your code; skip it. The depth gate above applies to tests too: a shallow unit warrants a shallow test surface, often none.
+
+**Match the test's weight to the unit's depth.** If the harness — mocks, render plumbing, DOM setup — dwarfs the assertion, either the unit is too trivial to test or you're testing the wrong seam. Pull the logic into a unit you can test directly (the validation schema, the typed-vs-selected normalizer) and test *that*, not the rendered field around it. Test through the deepest interface that still isolates your logic — a deep interface gives a small test surface that covers a lot, the same leverage callers get.
+
+**A test states what it protects.** Its name and body should make the protected behaviour obvious on sight. If a reader can't tell what would break, restructure it.
