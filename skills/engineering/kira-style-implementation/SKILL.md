@@ -1,6 +1,6 @@
 ---
 name: kira-style-implementation
-description: Implement code in Kira's style — KISS, deep modules, single responsibility, and names that carry both the what and the why. Use whenever writing or changing implementation code (features, fixes, refactors), or when /implement-issues runs with the kira-style approach. For OOP and design-pattern judgement see abstraction.md; for React/TypeScript/MUI/Java/Spring Boot specifics see stack.md.
+description: Implement code in Kira's style — KISS, deep modules, single responsibility, and names that carry both the what and the why. Use whenever writing or changing implementation code (features, fixes, refactors), whenever reviewing code or running a code review (e.g. /code-review, /review), or when /implement-issues runs with the kira-style approach. For OOP and design-pattern judgement see abstraction.md; for React/TypeScript/MUI/Java/Spring Boot specifics see stack.md.
 ---
 
 # Kira-Style Implementation
