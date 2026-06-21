@@ -12,6 +12,15 @@ Two companion files go deeper, one level down:
 - **[abstraction.md](abstraction.md)** — when OOP structure and design patterns are *earned*.
 - **[stack.md](stack.md)** — concrete best practices for the stack (React, TypeScript, MUI, Java, Spring Boot). Versioned and date-stamped; consult it when the task touches those.
 
+## Before writing OR reviewing code (required)
+
+Do this **first** — before the first edit or the first review finding, not after. The principles below are general; the companion files are how they land in real code, and skipping them is how stack-specific rules get missed.
+
+1. Does the task touch **React, TypeScript, MUI, Java, or Spring Boot**? → **Read [stack.md](stack.md) now.** It carries rules the general principles don't spell out — e.g. `Optional` only for return values (never fields), errors as `ProblemDetail` via `@RestControllerAdvice`, Effects only for genuine fetch-on-display, sealed-type variant sets.
+2. Are you **introducing or judging** a class, interface, layer, or pattern? → **Read [abstraction.md](abstraction.md) now.**
+
+This applies to reviews as much as to implementation: a kira-style review is only as trustworthy as the layer it checks against, so load that layer before you start judging.
+
 ## KISS — keep it simple
 
 > Prefer the straightforward solution over the clever one.
