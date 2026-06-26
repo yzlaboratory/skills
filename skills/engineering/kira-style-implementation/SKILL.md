@@ -72,9 +72,10 @@ Default: **no comment.** A comment is the last resort, reached only after you've
 
 **Never write these — delete them on sight:**
 
-- **File / module / JSDoc header blocks** that summarise a file whose names already describe it.
+- **File / module / JSDoc / class-Javadoc header blocks** that summarise a file or class whose names already describe it. A header longer than ~2 sentences, or one using `<ul>` / multiple `<p>`, is a smell — re-audit it sentence by sentence; long headers are where what-comments hide.
 - **Provenance or history** — "moved from X", "recreated locally", "was Y in the toolkit", ticket numbers. That belongs in the commit message and the PR, never in the source.
 - **Restatements of the *what*** — `// debounced search` above a debounced search, `// increment i` above `i++`, `// flatten back to the API shape` above a `toStepData` mapper. These rot the moment the code changes.
+- **The ADR-justified paragraph.** A single ADR reference, ticket link, or security rationale justifies *one clause* — not the summary wrapped around it. Keep the why-sentence; cut the surrounding what. This is the trap that survives a careless review: a block reads as "keep" because it *contains* a why.
 
 **What a kept comment looks like** — it explains a decision the reader would otherwise question, and the code genuinely cannot express it:
 
@@ -87,7 +88,7 @@ Default: **no comment.** A comment is the last resort, reached only after you've
     *  from @lexware/lexbank-react-toolkit, used nowhere else… */   ← provenance, delete
 ```
 
-**Cleanup pass.** Comments accumulate while you draft. Before committing, re-read the diff and delete every comment that step 1 or step 2 above could remove. The default is none; a comment that survives this pass should be a rare, deliberate *why*.
+**Cleanup pass — enumerate, don't eyeball.** Comments accumulate while you draft, and a reviewer skims them as a block. Both fail the same way: a paragraph that *contains* one why reads as "keep" when only one sentence earns it. So before committing, and in every review, **list each comment in the diff and give it a one-word verdict — keep / cut / extract — judging sentence by sentence, not block by block.** The unit of deletion is the sentence. Don't trust a prior "cut to why" commit; re-audit from scratch. The default is none; a comment that survives should be a rare, deliberate *why*.
 
 ## Tests
 

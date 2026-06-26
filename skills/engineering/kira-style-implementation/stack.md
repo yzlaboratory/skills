@@ -61,6 +61,7 @@ The principles in [SKILL.md](SKILL.md) and [abstraction.md](abstraction.md) stil
 - **Sealed interface + records + pattern-matching `switch`** for a closed set of variants; the compiler enforces exhaustiveness. This is the *earned* OOP from [abstraction.md](abstraction.md) — model a fixed variant set and let the type system check every case.
 - **`Optional` for possibly-absent return values only** — never fields or parameters, never `.get()` without a check.
 - **Immutability by default** — `final` fields, unmodifiable collections.
+- **Javadoc defaults to absent.** A class or method Javadoc earns its place only for an irreducible *why*, never a roll-call of responsibilities the class name and method signatures already state. Delete `@param`/`@return` that restate the signature. The comment rules in [SKILL.md](SKILL.md) apply in full — class-level Javadoc is where they are most often broken, because a `<ul>` of "responsibilities" looks like documentation while being pure restatement.
 - Sources: [dev.java (Oracle)](https://dev.java/) — records, sealed classes, pattern matching. Reference book: *Effective Java*, 3rd ed.
 
 ### Spring Boot 4 (REST)
