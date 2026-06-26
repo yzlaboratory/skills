@@ -77,6 +77,7 @@ Default: **no comment.** A comment earns its place only when the reason can't be
 - **Provenance or history** — "moved from X", "recreated locally", "was Y in the toolkit", ticket numbers. That belongs in the commit message and the PR, never in the source.
 - **Restatements of the *what*** — `// debounced search` above a debounced search, `// increment i` above `i++`, `// flatten back to the API shape` above a `toStepData` mapper. These rot the moment the code changes.
 - **The ADR-justified paragraph.** A single ADR reference, ticket link, or security rationale justifies *one clause* — not the summary wrapped around it. Keep the why-sentence; cut the surrounding what. This is the trap that survives a careless review: a block reads as "keep" because it *contains* a why.
+- **The amnestied frame.** One genuine *why* sentence does not absolve the sentences around it. Two shapes recur and both go: a **summary opener** that names what the class/method already names (`Issues and consumes the … tokens`; `Sends mail after commit, off-thread, best-effort`), and a **roll-call tail** that lists members the code already lists (`Covers issue, expiry, single-use…` over the `@Test` names; a colon-list of the fields beneath it). Keep the why; delete the frame around it.
 
 **What a kept comment looks like** — it explains a decision the reader would otherwise question, and the code genuinely cannot express it:
 
@@ -89,7 +90,13 @@ Default: **no comment.** A comment earns its place only when the reason can't be
     *  from @lexware/lexbank-react-toolkit, used nowhere else… */   ← provenance, delete
 ```
 
-**Cleanup pass — enumerate, don't eyeball.** Comments accumulate while you draft, and a reviewer skims them as a block. Both fail the same way: a paragraph that *contains* one why reads as "keep" when only one sentence earns it. So before committing, and in every review, **list each comment in the diff and give it a one-word verdict — keep / cut / extract — judging sentence by sentence, not block by block.** The unit of deletion is the sentence. Don't trust a prior "cut to why" commit; re-audit from scratch. The default is none; a comment that survives should be a rare, deliberate *why*.
+**Cleanup pass — emit a per-sentence ledger, don't eyeball.** A header arrives as one visual block, so it gets one judgment — and "contains a why" reads as "keep." Defeat this by making the *sentence*, not the comment, the row. Before committing, and for every header a review touches, write out the ledger — one row per sentence — and only then act:
+
+| location | sentence | what can the code / name / type / test NOT say here? | verdict |
+
+A sentence earns `keep` only when column 3 is a concrete *why* — rationale, constraint, rejected alternative, ordering/catch gotcha — that no name, type, or test could carry. Otherwise `cut`, or `extract` if it narrates a block. A multi-sentence header that yields one `keep` and three `cut`s is the normal result, not a failure. Emit the ledger as text: judged in-head, the block re-collapses into one verdict. Don't trust a prior "cut to why" commit — re-audit from scratch. The default is none; a comment that survives should be a rare, deliberate *why*.
+
+A *why* predicated on a mechanism may keep that mechanism, but only as the single minimal **anchor** it needs to be intelligible and protective — never a full restatement. When several `what` clauses each claim to anchor the why, keep the one the warning attaches to and cut the rest. Test per clause: if deleting it leaves the why still standing and still protective, it was narration. `hash stored, never raw → leak-safe` keeps one anchor; `hash persisted, raw returned once, never stored → leak-safe` keeps two and is over-anchored.
 
 ## Tests
 
