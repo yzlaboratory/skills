@@ -64,11 +64,12 @@ A name's job is to answer on sight: why does this exist, what does it do, how is
 
 ## Comments: only the why the code can't carry
 
-Default: **no comment.** A comment is the last resort, reached only after you've tried to make it unnecessary. Before writing one, in order:
+Default: **no comment.** A comment earns its place only when the reason can't be moved *into the code itself* — into a name, a type, a structure, or a test. Before writing one, in order:
 
 1. Can a clearer **name** carry it? Rename, delete the comment.
-2. Is it narrating a *block*? **Extract the block into a function (or hook) whose name says what the comment said, then delete the comment.** This is mandatory, not optional — a comment that introduces a block is a function waiting to be named.
-3. Only if the surviving meaning is a *why* no name can hold — a non-obvious rationale, a real constraint, a business rule, the reason this approach beat an obvious alternative — does a comment earn its place.
+2. Can a **type or structure** carry it? Encode the invariant so the wrong code can't compile — a sealed variant set, a boundary DTO with no field to leak, a narrowed type — or pin it with a test that fails when the rule is broken. If the code can *enforce* the why, it must not merely narrate it. (This is the rung most often skipped: trimming a comment's prose is not the same as making the comment unnecessary.)
+3. Is it narrating a *block*? **Extract the block into a function (or hook) whose name says what the comment said, then delete the comment.** This is mandatory, not optional — a comment that introduces a block is a function waiting to be named.
+4. Only a *why no code can hold* earns a comment — a non-obvious rationale, a real constraint, a business rule, the reason this approach beat an obvious alternative, or an *implementation* gotcha (why this ordering, why this catch arm, why a deliberate-looking-wrong choice is right). This covers both interface whys ("why this exists") and implementation whys ("why this code does what it does"); don't narrow it to existence and silently evict the line-level ones.
 
 **Never write these — delete them on sight:**
 
